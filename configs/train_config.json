@@ -1,0 +1,36 @@
+{
+    "comment": "AASIST-L training config for ASVspoof 2019 LA",
+
+    "model_config": "configs/aasist_L.json",
+
+    "data": {
+        "train_protocol": "data/raw/ASVspoof2019_LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt",
+        "dev_protocol":   "data/raw/ASVspoof2019_LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trl.txt",
+        "eval_protocol":  "data/raw/ASVspoof2019_LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt",
+        "train_audio_dir":"data/raw/ASVspoof2019_LA/ASVspoof2019_LA_train/flac/",
+        "dev_audio_dir":  "data/raw/ASVspoof2019_LA/ASVspoof2019_LA_dev/flac/",
+        "eval_audio_dir": "data/raw/ASVspoof2019_LA/ASVspoof2019_LA_eval/flac/"
+    },
+
+    "training": {
+        "epochs": 100,
+        "batch_size": 24,
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "loss": "LMCL",
+        "optimizer": "Adam",
+        "save_best_by": "dev_EER"
+    },
+
+    "rawboost": {
+        "enabled": true,
+        "type": 5,
+        "comment": "type 5 = convolutive + impulsive (best for LA microphone condition)"
+    },
+
+    "paths": {
+        "weights_dir": "outputs/weights/",
+        "scores_dir":  "outputs/scores/",
+        "plots_dir":   "outputs/plots/"
+    }
+}

@@ -1,0 +1,60 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Raw audio datasets (too large for Git — see data/README.md) ───────────────
+data/raw/
+data/processed/
+
+# ── Model weights (download via scripts/setup_env.sh) ────────────────────────
+# Keep the pretrained AASIST-L weight file tracked? No — 1.6MB is fine but
+# weights produced during training (best_model.pth, calibrator.pkl) are output.
+# Uncomment below to exclude ALL weights:
+# outputs/weights/
+
+# Training/eval outputs — do NOT commit run artifacts to git
+outputs/scores/
+outputs/plots/
+# Keep outputs/weights/ tracked so pretrained weights are available:
+# (Remove this comment and add outputs/weights/ above if you prefer not to track them)
+
+# ── Pytest / test cache ───────────────────────────────────────────────────────
+.pytest_cache/
+.cache/
+*.pyc
+
+# ── Claude Code agent files ───────────────────────────────────────────────────
+.claude/
+
+# ── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ── Secrets / credentials ────────────────────────────────────────────────────
+.env
+*.pem
+*.key
+secrets.json
+
+# ── Temp files ───────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+tmp/
+temp/
