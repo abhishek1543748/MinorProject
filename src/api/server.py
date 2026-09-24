@@ -16,7 +16,9 @@ from fastapi.staticfiles import StaticFiles
 import torch
 
 ROOT = Path(__file__).parent.parent.parent
-WEIGHTS = ROOT / "outputs/weights/best_model.pth"
+DEFAULT_WEIGHTS = ROOT / "outputs/weights/best_model.pth"
+FALLBACK_WEIGHTS = ROOT / "outputs/weights/AASIST-L.pth"
+WEIGHTS = DEFAULT_WEIGHTS if DEFAULT_WEIGHTS.exists() else FALLBACK_WEIGHTS
 CONFIG  = ROOT / "configs/aasist_L.json"
 CAL     = ROOT / "outputs/weights/calibrator.pkl"
 
@@ -96,7 +98,7 @@ async def analyze(file: UploadFile = File(...)):
         result = {
             "raw_score":     round(raw_score, 4),
             "prob_spoof":    round(prob_spoof, 4),
-            "label":         "spoof" if raw_score > 0 else "bonafide",
+            "label":         "bonafide" if raw_score > 0 else "spoof",
             "model_version": WEIGHTS.name,
         }
 

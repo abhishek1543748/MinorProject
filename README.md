@@ -45,10 +45,10 @@ Example output:
 |---|---|---|
 | 0 | Setup + first inference on real ASVspoof files | ✅ Complete |
 | 1 | Shared preprocessing module + 10/10 tests passing | ✅ Complete |
-| 2 | Training pipeline on ASVspoof 2019 LA | ⏳ Next |
-| 3 | Baseline EER (target: ~0.83%) | ⏳ Pending |
+| 2 | Training pipeline on ASVspoof 2019 LA | ✅ Complete |
+| 3 | Baseline EER + Batch Evaluation | ✅ Complete |
 | 4 | Cross-domain stress test on ASVspoof 2021 DF | ⏳ Pending |
-| 5 | Calibration + 3-band abstain verdict | ⏳ Pending |
+| 5 | Calibration + 3-band abstain verdict | ⏳ Next |
 | 6 | Grad-CAM + FastAPI + web UI | ⏳ Pending |
 | 7 | Codec robustness study | ⏳ Pending |
 | 8 | Write-up + professor review | ⏳ Pending |
