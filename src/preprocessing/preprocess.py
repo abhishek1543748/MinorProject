@@ -24,14 +24,34 @@ TARGET_LEN  = 64600          # 4.025 seconds at 16 kHz (AASIST standard)
 def load_audio(path: str) -> tuple[torch.Tensor, int]:
     """
     Decode any audio file to a float32 waveform.
-    Supports: wav, flac, mp3, ogg, m4a (via torchaudio / soundfile).
+    Supports: wav, flac, mp3, ogg, m4a (via torchaudio / soundfile, with PyAV fallback).
     Returns: (waveform [C, T], sample_rate)
     """
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"Audio file not found: {path}")
-    waveform, sr = torchaudio.load(str(path))
-    return waveform, sr
+    try:
+        waveform, sr = torchaudio.load(str(path))
+        return waveform, sr
+    except Exception:
+        # Fallback to PyAV for non-standard / lossy FLAC streams (common in ASVspoof 2021 DF)
+        import av
+        container = av.open(str(path))
+        sr = container.streams.audio[0].codec_context.sample_rate
+        frames = [frame.to_ndarray() for frame in container.decode(audio=0)]
+        container.close()
+        raw = np.concatenate(frames, axis=-1)
+        if raw.ndim == 1:
+            raw = raw[np.newaxis, :]
+        if raw.dtype == np.int16:
+            raw = raw.astype(np.float32) / 32768.0
+        elif raw.dtype == np.int32:
+            raw = raw.astype(np.float32) / 2147483648.0
+        elif np.issubdtype(raw.dtype, np.integer):
+            raw = raw.astype(np.float32) / 32768.0
+        else:
+            raw = raw.astype(np.float32)
+        return torch.from_numpy(raw), sr
 
 
 def to_mono(waveform: torch.Tensor) -> torch.Tensor:

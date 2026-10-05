@@ -47,43 +47,87 @@ def get_args():
 
 def read_protocol(path: str, limit: int = None) -> list[dict]:
     """
-    Parse ASVspoof protocol file.
-    Format: <speaker> <filename> <env> <attack> <label>
-    Label convention: 0 = bonafide, 1 = spoof
+    Parse ASVspoof protocol file — auto-detects format:
 
-    If limit is specified, samples equally from bonafide and spoof
-    so that EER can be properly computed on both classes.
+    Format A — ASVspoof 2019 LA (space-separated, no header, 5 columns):
+        <speaker> <filename> <env> <attack> <label>
+        e.g.: LA_0069 LA_E_5849185 - - bonafide
+
+    Format B — ASVspoof 2021 DF (tab-separated, has header row):
+        speaker_id  filename  codec  source  label  trim
+        e.g.: LA_0069\\tLA_E_5849185\\t-\\t-\\tbonafide\\ttrue
+
+    Label convention: 0 = bonafide, 1 = spoof
+    If limit is specified, samples equally from bonafide and spoof.
     """
     bonafide_items = []
     spoof_items = []
     target_each = (limit // 2) if limit else None
 
     with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            parts = line.strip().split()
-            if len(parts) < 5:
-                continue
-            label_str = parts[4].lower()
-            if label_str not in ("bonafide", "spoof"):
-                continue
+        raw_lines = f.readlines()
 
-            entry = {
-                "filename": parts[1],
-                "attack":   parts[3],
-                "label":    0 if label_str == "bonafide" else 1,
-            }
+    # ── Detect format ────────────────────────────────────────────────────────
+    first_non_empty = next((l.strip() for l in raw_lines if l.strip()), "")
+    has_tab_header = "\t" in first_non_empty and first_non_empty.lower().startswith("speaker")
+    is_2021_format = has_tab_header
 
-            if entry["label"] == 0:
-                if target_each is None or len(bonafide_items) < target_each:
-                    bonafide_items.append(entry)
-            else:
-                if target_each is None or len(spoof_items) < target_each:
-                    spoof_items.append(entry)
+    # Format C — official 2021 DF keys (trial_metadata.txt), space-separated, no header:
+    #   <spk> <DF_E_xxxxxxx> <codec> <source> <attack> <label> <trim> <subset> ...
+    _fp = first_non_empty.split()
+    is_2021_meta = (not has_tab_header and len(_fp) >= 8
+                    and _fp[1].startswith("DF_") and _fp[5].lower() in ("bonafide", "spoof"))
 
-            if target_each and len(bonafide_items) >= target_each and len(spoof_items) >= target_each:
-                break
+    if is_2021_format:
+        # Format B: tab-separated with header
+        header = first_non_empty.split("\t")
+        try:
+            col_filename = header.index("filename")
+            col_label    = header.index("label")
+            col_attack   = header.index("source") if "source" in header else -1
+        except ValueError:
+            raise ValueError(f"Cannot parse 2021 DF header: {header}")
+        lines_to_parse = raw_lines[1:]  # skip header
+    elif is_2021_meta:
+        col_filename, col_label, col_attack = 1, 5, 4
+        lines_to_parse = raw_lines
+    else:
+        # Format A: 2019 LA space-separated, no header
+        col_filename, col_label, col_attack = 1, 4, 3
+        lines_to_parse = raw_lines
+
+    for line in lines_to_parse:
+        sep = "\t" if is_2021_format else None
+        parts = line.strip().split(sep)
+        if len(parts) <= max(col_filename, col_label):
+            continue
+
+        label_str = parts[col_label].strip().lower()
+        if label_str not in ("bonafide", "spoof"):
+            continue
+
+        attack = parts[col_attack].strip() if col_attack >= 0 and col_attack < len(parts) else "-"
+        entry = {
+            "filename": parts[col_filename].strip(),
+            "attack":   attack,
+            "label":    0 if label_str == "bonafide" else 1,
+        }
+
+        if entry["label"] == 0:
+            if target_each is None or len(bonafide_items) < target_each:
+                bonafide_items.append(entry)
+        else:
+            if target_each is None or len(spoof_items) < target_each:
+                spoof_items.append(entry)
+
+        if target_each and len(bonafide_items) >= target_each and len(spoof_items) >= target_each:
+            break
 
     items = bonafide_items + spoof_items
+    fmt_name = ("ASVspoof 2021 DF (tab/header)" if is_2021_format
+                else "ASVspoof 2021 DF trial_metadata" if is_2021_meta
+                else "ASVspoof 2019 LA (space/no-header)")
+    print(f"[eval] Protocol format detected: {fmt_name}")
     return items
 
 

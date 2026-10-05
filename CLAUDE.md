@@ -217,7 +217,9 @@ zone vs a confident wrong answer."
 Phase 0 — ✅ COMPLETE. Inference pipeline verified on real ASVspoof2019 LA files.
 Phase 1 — ✅ COMPLETE. Preprocessing parity confirmed; all 10 tests pass.
 Phase 2 — ✅ COMPLETE. Training pipeline fully wired, dataset collator tested, and unit test suite verified (tests/test_phase2.py 4/4 passing).
-Phase 3 — ✅ COMPLETE. Batch evaluation script eval.py upgraded with fast vectorised EER (scikit-learn roc_curve), mini-batch inference, balanced subset sampling, unit tests (tests/test_eval.py 2/2 passing), and publication plots generation (scripts/plot_metrics.py).
+Phase 3 — ✅ COMPLETE. Real EER on ASVspoof 2019 LA eval set: 0.9925% (71,237 utterances, 7,355 bonafide + 63,882 spoof). Paper reports 0.83% — within 0.16% variance using pretrained weights (no fine-tuning). EER threshold=3.0618. Publication plots saved to outputs/plots/.
+Phase 4 — ⏳ IN PROGRESS. eval.py updated to auto-detect both 2019 LA (space/no-header) and 2021 DF (tab/header) protocol formats. 2019 LA baseline confirmed. Awaiting 2021 DF download (34.5 GB, 4 parts from Zenodo record 4835108) + DF eval keys from asvspoof.org.
+Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef=-0.7694, intercept=0.8331). Auto-tuned thresholds: lower=0.25, upper=0.75. IN-DOMAIN result on 2019 LA eval (71,237 files): AUTHENTIC=11.4%, UNCERTAIN=3.8%, SPOOF=84.8%, Accuracy-excl-abstain=98.80%. Cross-domain comparison (2021 DF) pending Phase 4 data — expected UNCERTAIN to jump to ~40-60%.
 
 Env: no conda on this machine — using `.venv` (--system-site-packages,
 reuses system torch 2.6.0+cpu) + `pip install torchaudio==2.6.0` from the

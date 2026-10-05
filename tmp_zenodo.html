@@ -1,0 +1,2163 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+  
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="5fPGCLllnWrvFxH9QWI0l1TadV7byeEvfPcyK2VkS_s"/>
+    <meta name="google-site-verification" content="Rp5zp04IKW-s1IbpTOGB7Z6XY60oloZD5C3kTM-AiY4"/>
+
+    
+    
+    <meta name="generator" content="InvenioRDM 15.0"/>
+
+    
+    
+    
+  
+    <meta name="description" content="=== Notice === Evaluation keys (bona fide / spoof) and meta-labels can be downloaded from https://www.asvspoof.org/index2021.html. ============ The automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a community-led initiative which aims to promote the consideration of spoofing and the development of countermeasures.  ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake speech.  ASVspoof 2021 comprises three different tasks:      Logical access (LA): bona fide and spoofed utterances generated using text-to-speech (TTS) and voice conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding and transmission effects;      Physical access (PA): bona fide utterances are made in a real, physical space in which spoofing attacks are captured and then replayed within the same physical space using replay devices of varying quality;      Speech deepfake (DF): a fake audio detection task comprising bona fide and spoofed utterances generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without speaker verification. This repository provides the evaluation set for the DF task. For more details, please visit our website below. https://www.asvspoof.org" />
+    <meta name="citation_title" content="ASVspoof 2021 Challenge - Speech Deepfake Database" />
+    <meta name="citation_author" content="Delgado, Héctor" />
+    <meta name="citation_author" content="Evans, Nicholas" />
+    <meta name="citation_author" content="Kinnunen, Tomi" />
+    <meta name="citation_author" content="Lee, Kong Aik" />
+    <meta name="citation_author" content="Liu, Xuechen" />
+    <meta name="citation_author" content="Nautsch, Andreas" />
+    <meta name="citation_author" content="Patino, Jose" />
+    <meta name="citation_author" content="Sahidullah, Md" />
+    <meta name="citation_author" content="Todisco, Massimiliano" />
+    <meta name="citation_author" content="Wang, Xin" />
+    <meta name="citation_author" content="Yamagishi, Junichi" />
+    <meta name="citation_doi" content="10.5281/zenodo.4835108" />
+    <meta name="citation_keywords" content="Speaker recognition" />
+    <meta name="citation_keywords" content="Speaker verification" />
+    <meta name="citation_keywords" content="ASVspoof" />
+    <meta name="citation_keywords" content="Anti-spoofing" />
+    <meta name="citation_keywords" content="Presentation attack detection" />
+    <meta name="citation_keywords" content="Deepfake detection" />
+    <meta name="citation_abstract_html_url" content="https://zenodo.org/records/4835108" />
+    <meta property="og:title" content="ASVspoof 2021 Challenge - Speech Deepfake Database" />
+    <meta property="og:description" content="=== Notice === Evaluation keys (bona fide / spoof) and meta-labels can be downloaded from https://www.asvspoof.org/index2021.html. ============ The automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a community-led initiative which aims to promote the consideration of spoofing and the development of countermeasures.  ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake speech.  ASVspoof 2021 comprises three different tasks:      Logical access (LA): bona fide and spoofed utterances generated using text-to-speech (TTS) and voice conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding and transmission effects;      Physical access (PA): bona fide utterances are made in a real, physical space in which spoofing attacks are captured and then replayed within the same physical space using replay devices of varying quality;      Speech deepfake (DF): a fake audio detection task comprising bona fide and spoofed utterances generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without speaker verification. This repository provides the evaluation set for the DF task. For more details, please visit our website below. https://www.asvspoof.org" />
+    <meta property="og:url" content="https://zenodo.org/records/4835108" />
+    <meta property="og:site_name" content="Zenodo" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@zenodo_org" />
+    <meta name="twitter:title" content="ASVspoof 2021 Challenge - Speech Deepfake Database" />
+    <meta name="twitter:description" content="=== Notice === Evaluation keys (bona fide / spoof) and meta-labels can be downloaded from https://www.asvspoof.org/index2021.html. ============ The automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a community-led initiative which aims to promote the consideration of spoofing and the development of countermeasures.  ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake speech.  ASVspoof 2021 comprises three different tasks:      Logical access (LA): bona fide and spoofed utterances generated using text-to-speech (TTS) and voice conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding and transmission effects;      Physical access (PA): bona fide utterances are made in a real, physical space in which spoofing attacks are captured and then replayed within the same physical space using replay devices of varying quality;      Speech deepfake (DF): a fake audio detection task comprising bona fide and spoofed utterances generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without speaker verification. This repository provides the evaluation set for the DF task. For more details, please visit our website below. https://www.asvspoof.org" />
+    
+    <link rel="alternate" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz">
+    <link rel="item" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz">
+    
+    <link rel="alternate" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz">
+    <link rel="item" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz">
+    
+    <link rel="alternate" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz">
+    <link rel="item" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz">
+    
+    <link rel="alternate" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz">
+    <link rel="item" type="application/gzip" href="https://zenodo.org/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz">
+
+
+<link rel="canonical" href="https://zenodo.org/records/4835108">
+      
+      
+      <title>ASVspoof 2021 Challenge - Speech Deepfake Database | Zenodo</title>
+      <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
+          <link rel="apple-touch-icon" sizes="120x120" href="/static/apple-touch-icon-120.png"/>
+          <link rel="apple-touch-icon" sizes="152x152" href="/static/apple-touch-icon-152.png"/>
+          <link rel="apple-touch-icon" sizes="167x167" href="/static/apple-touch-icon-167.png"/>
+          <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon-180.png"/>
+    
+      <link rel="stylesheet" href="/static/dist/css/6874.66341f2e5059614d.css" />
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+      <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+    
+  </head>
+
+  <body data-invenio-config='{"isMathJaxEnabled": "//cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML"}'  itemscope itemtype="http://schema.org/WebPage" data-spy="scroll" data-target=".scrollspy-target">
+      <a id="skip-to-main" class="ui button primary ml-5 mt-5 skip-link" href="#main">Skip to main</a>
+      <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+    
+
+<div>
+  <header class="theme header">
+
+    <div class="outer-navbar">
+      <div class="ui container invenio-header-container">
+        <nav id="invenio-nav" class="ui inverted menu borderless p-0">
+          <div class="item logo p-0">
+                      <a class="logo-link" href="https://zenodo.org/">
+                      <img class="ui image rdm-logo"
+                            src="/static/images/invenio-rdm.svg"
+                            alt="Zenodo home"/>
+                    </a>
+          </div>
+
+          <div id="rdm-burger-toggle">
+            <button
+              id="rdm-burger-menu-icon"
+              class="ui button transparent"
+              aria-label="Menu"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="invenio-menu"
+            >
+              <span class="navicon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <nav
+            id="invenio-menu"
+            aria-labelledby="rdm-burger-menu-icon"
+            class="ui fluid menu borderless mobile-hidden"
+          >
+            <button
+              id="rdm-close-burger-menu-icon"
+              class="ui button transparent"
+              aria-label="Close menu"
+            >
+              <span class="navicon" aria-hidden="true"></span>
+            </button>
+
+    
+    
+    
+      <div class="item p-0 search-bar">
+        <div id="header-search-bar" data-options='[{"key": "records", "text": "All Zenodo", "value": "/search"}]'>
+          <div class="ui fluid search">
+            <div class="ui icon input">
+              <input
+                autocomplete="off"
+                aria-label="Search records"
+                placeholder="Search records..."
+                type="text"
+                tabindex="0"
+                class="prompt"
+                value=""
+              >
+              <button class="ui icon button right-floated search" aria-label="Search">
+                <i aria-hidden="true" class="search icon"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+                  <div class="item">
+                    <a href="/communities">Communities</a>
+                  </div>
+
+              
+                <div class="item">
+                  <a href="/me/uploads">My dashboard</a>
+                </div>
+              
+              <div class="right menu item">
+    <form>
+      <a
+        href="/login/?next=/records/4835108"
+        class="ui button auth-button" aria-busy="false" aria-live="polite" aria-label="Log in"
+      >
+        <i class="sign-in icon auth-icon" aria-hidden="true"></i>
+        Log in
+      </a>
+      
+        <a href="/signup/" class="ui button signup">
+          <i class="edit outline icon"></i>
+          Sign up
+        </a>
+      
+    </form>
+              </div>
+          </nav>
+        </nav>
+      </div>
+    </div>
+      
+      
+    
+      
+    
+    
+      
+        <div class="ui warning message top attached m-0 inv-banner" id="banner-96">
+          <div class="ui container">
+              <p>Zenodo is currently experiencing slowness and intermittent outages due to heavy automated traffic from bots and AI crawlers. We are aware of the problem, and our team is focused on stabilizing the service. Thank you for your patience. <a href="https://blog.zenodo.org/2026/09/15/2026-09-15-stability-and-performance-updates/">More info here.</a></p>
+          </div>
+        </div>
+      
+    
+  </header>
+</div>
+
+  <main id="main">
+    <div class="invenio-page-body">
+<span id="detail-share-btn-require-link-expiration"
+        data-share-btn-require-link-expiration='false'>
+
+  <section id="banners" class="banners" aria-label="Information banner">
+    <!-- COMMUNITY HEADER: hide it when displaying the submission request -->
+    
+      
+    
+    <!-- /COMMUNITY HEADER -->
+
+    <!-- PREVIEW HEADER -->
+    
+    <!-- /PREVIEW HEADER -->
+
+    
+  </section>
+
+
+  <div class="ui container">
+    <div class="ui relaxed grid mt-5">
+      <div class="two column row top-padded">
+
+        
+        <article
+          class="sixteen wide tablet eleven wide computer column main-record-content">
+          
+
+              
+
+              
+
+              <section id="record-info"
+                       aria-label="Publication date and version number">
+                <div class="ui grid middle aligned">
+                  <div class="two column row">
+                    <div class="left floated left aligned column">
+                      <span class="ui" title="Publication date">
+                        Published May 28, 2021
+                      </span>
+                      <span
+                        class="label text-muted"> | Version 1.0</span>
+                    </div>
+                    <div class="right floated right aligned column">
+
+                      
+                      
+                        
+                          
+                        
+                        
+                          
+                        
+                        <a href="/search?q=&amp;f=resource_type%3Avideo"
+                           role="note"
+                           class="ui label horizontal small neutral mb-5"
+                           aria-label="Resource type"
+                        >
+                          Video/Audio
+                        </a>
+                      
+
+                      <span role="note"
+                            class="ui label horizontal small access-status open mb-5"
+                            data-tooltip="The record and files are publicly accessible."
+                            data-inverted=""
+                            aria-label="Access status"
+                      >
+                        
+                          <i class="icon unlock"
+                             aria-hidden="true"></i>
+                        
+                        <span
+                          aria-label="The record and files are publicly accessible.">
+                          Open
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <div class="ui divider hidden"></div><section id="record-title-section"
+                       aria-label="Record title, authors and contributors">
+                <h1 id="record-title"
+                    class="wrap-overflowing-text">ASVspoof 2021 Challenge - Speech Deepfake Database</h1>
+
+                
+                  <section id="creatibutors"
+                           aria-label="Authors and contributors"><div class="ui grid">
+
+  
+    <div id="creators-section" class="row ui accordion affiliations">
+      <div class="sixteen wide mobile twelve wide tablet thirteen wide computer column">
+        <h3 class="sr-only">Authors/Creators</h3>
+        <ul class="creatibutors">
+          
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="1"
+      data-affiliations="Nuance Communications Inc., Spain">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Nuance Communications Inc., Spain"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Delgado,+H%C3%A9ctor%22"
+    >
+      <span class="creatibutor-name">Delgado, Héctor</span><sup class="font-tiny">1</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Evans,+Nicholas%22"
+    >
+      <span class="creatibutor-name">Evans, Nicholas</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="3"
+      data-affiliations="University of Eastern Finland, Finland">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="University of Eastern Finland, Finland"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Kinnunen,+Tomi%22"
+    >
+      <span class="creatibutor-name">Kinnunen, Tomi</span><sup class="font-tiny">3</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="4"
+      data-affiliations="Institute for Infocomm Research, Singapore">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Institute for Infocomm Research, Singapore"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Lee,+Kong+Aik%22"
+    >
+      <span class="creatibutor-name">Lee, Kong Aik</span><sup class="font-tiny">4</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="3"
+      data-affiliations="University of Eastern Finland, Finland">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="University of Eastern Finland, Finland"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Liu,+Xuechen%22"
+    >
+      <span class="creatibutor-name">Liu, Xuechen</span><sup class="font-tiny">3</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Nautsch,+Andreas%22"
+    >
+      <span class="creatibutor-name">Nautsch, Andreas</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Patino,+Jose%22"
+    >
+      <span class="creatibutor-name">Patino, Jose</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="5"
+      data-affiliations="Inria, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Inria, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Sahidullah,+Md%22"
+    >
+      <span class="creatibutor-name">Sahidullah, Md</span><sup class="font-tiny">5</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Todisco,+Massimiliano%22"
+    >
+      <span class="creatibutor-name">Todisco, Massimiliano</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="6"
+      data-affiliations="National Institute of Informatics, Japan">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="National Institute of Informatics, Japan"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Wang,+Xin%22"
+    >
+      <span class="creatibutor-name">Wang, Xin</span><sup class="font-tiny">6</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+          <li class="creatibutor-et-al">
+            <em>et al.</em>
+            
+  <a href="#"
+     class="creatibutors-show-all-link"
+     data-target="#creators-all-modal"
+     aria-haspopup="dialog">
+    Show all 11 authors
+  </a>
+
+          </li>
+        </ul>
+      </div>
+
+      
+    </div>
+    
+<div class="ui modal creatibutors-landing-modal"
+     id="creators-all-modal"
+     data-section="creators">
+  <i class="close icon"></i>
+  <div class="header">Authors/Creators</div>
+
+  <div class="content creatibutors-modal-search">
+    <div class="ui fluid icon input">
+      <input type="search"
+             class="creatibutors-filter-input"
+             data-panel="creators-modal-list"
+             placeholder="Search by name or affiliation…"
+             aria-label="Filter authors"
+             autocomplete="off" />
+      <i class="search icon" aria-hidden="true"></i>
+    </div>
+    <div class="creatibutors-count-bar mt-5">
+      <span class="creatibutors-filter-count text-muted" data-total="11">
+        11 / 11
+      </span>
+    </div>
+  </div>
+
+  <div class="scrolling content">
+    <div id="creators-modal-list" class="creatibutors-modal-list">
+      
+      <ul class="creatibutors">
+        
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="1"
+      data-affiliations="Nuance Communications Inc., Spain">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Nuance Communications Inc., Spain"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Delgado,+H%C3%A9ctor%22"
+    >
+      <span class="creatibutor-name">Delgado, Héctor</span><sup class="font-tiny">1</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Evans,+Nicholas%22"
+    >
+      <span class="creatibutor-name">Evans, Nicholas</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="3"
+      data-affiliations="University of Eastern Finland, Finland">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="University of Eastern Finland, Finland"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Kinnunen,+Tomi%22"
+    >
+      <span class="creatibutor-name">Kinnunen, Tomi</span><sup class="font-tiny">3</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="4"
+      data-affiliations="Institute for Infocomm Research, Singapore">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Institute for Infocomm Research, Singapore"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Lee,+Kong+Aik%22"
+    >
+      <span class="creatibutor-name">Lee, Kong Aik</span><sup class="font-tiny">4</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="3"
+      data-affiliations="University of Eastern Finland, Finland">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="University of Eastern Finland, Finland"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Liu,+Xuechen%22"
+    >
+      <span class="creatibutor-name">Liu, Xuechen</span><sup class="font-tiny">3</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Nautsch,+Andreas%22"
+    >
+      <span class="creatibutor-name">Nautsch, Andreas</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Patino,+Jose%22"
+    >
+      <span class="creatibutor-name">Patino, Jose</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="5"
+      data-affiliations="Inria, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="Inria, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Sahidullah,+Md%22"
+    >
+      <span class="creatibutor-name">Sahidullah, Md</span><sup class="font-tiny">5</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="2"
+      data-affiliations="EURECOM, France">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="EURECOM, France"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Todisco,+Massimiliano%22"
+    >
+      <span class="creatibutor-name">Todisco, Massimiliano</span><sup class="font-tiny">2</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="6"
+      data-affiliations="National Institute of Informatics, Japan">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="National Institute of Informatics, Japan"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Wang,+Xin%22"
+    >
+      <span class="creatibutor-name">Wang, Xin</span><sup class="font-tiny">6</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+  <li class="creatibutor-wrap separated"
+      data-affiliation-refs="6"
+      data-affiliations="National Institute of Informatics, Japan">
+    <a class="ui creatibutor-link"
+      
+        data-tooltip="National Institute of Informatics, Japan"
+        data-position="bottom center"
+      
+      href="/search?q=metadata.creators.person_or_org.name:%22Yamagishi,+Junichi%22"
+    >
+      <span class="creatibutor-name">Yamagishi, Junichi</span><sup class="font-tiny">6</sup></a>
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+    
+      <i class="user icon ml-5"></i>
+    
+  
+</li>
+  
+      </ul>
+    
+    </div>
+    <section class="creatibutors-panel-affiliations mt-1"
+             aria-label="Affiliations for creators">
+      
+  <ul>
+    
+    <li data-affiliation-ref="1">
+      1.
+
+      
+
+      Nuance Communications Inc., Spain
+    </li>
+    
+    <li data-affiliation-ref="2">
+      2.
+
+      
+
+      EURECOM, France
+    </li>
+    
+    <li data-affiliation-ref="3">
+      3.
+
+      
+
+      University of Eastern Finland, Finland
+    </li>
+    
+    <li data-affiliation-ref="4">
+      4.
+
+      
+
+      Institute for Infocomm Research, Singapore
+    </li>
+    
+    <li data-affiliation-ref="5">
+      5.
+
+      
+
+      Inria, France
+    </li>
+    
+    <li data-affiliation-ref="6">
+      6.
+
+      
+
+      National Institute of Informatics, Japan
+    </li>
+    
+  </ul>
+
+    </section>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="ui button close">Close</button>
+  </div>
+</div>
+
+  
+
+  
+
+</div>
+                  </section>
+                
+              </section>
+
+
+
+  <section id="description" class="rel-mt-2 rich-input-content" aria-label="Record description">
+    <h2 id="description-heading" class="sr-only">Description</h2>
+    
+    <div style="word-wrap: break-word;">
+      <p>=== Notice ===</p>
+
+<p>Evaluation keys&nbsp;(bona fide / spoof) and&nbsp;meta-labels&nbsp;can be downloaded from&nbsp;https://www.asvspoof.org/index2021.html.</p>
+
+<p>============</p>
+
+<p>The automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a&nbsp;community-led initiative which aims to promote the consideration of spoofing and the development of&nbsp;countermeasures. &nbsp;ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the&nbsp;goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake&nbsp;speech.&nbsp;<br>
+<br>
+ASVspoof 2021 comprises three different tasks: &nbsp; &nbsp;<br>
+<em>&nbsp;Logical access (LA)</em>: bona fide and spoofed utterances generated using text-to-speech (TTS) and voice&nbsp;conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding&nbsp;and transmission effects;<br>
+&nbsp; &nbsp;&nbsp;<br>
+<em>Physical access (PA)</em>: bona fide utterances are made in a real, physical space in which spoofing attacks&nbsp;are captured and then replayed within the same physical space using replay devices of varying quality;<br>
+&nbsp; &nbsp;&nbsp;<br>
+<em>Speech deepfake (DF)</em>: a fake audio detection task comprising bona fide and spoofed utterances&nbsp;generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without&nbsp;speaker verification.<br>
+<br>
+<strong>This repository provides the evaluation set for the DF task.</strong><br>
+<br>
+For more details, please visit our website below. https://www.asvspoof.org</p>
+    </div>
+  </section>
+
+
+<section
+      id="record-files" class="rel-mt-2 rel-mb-3"
+      aria-label="Files"
+    ><h2 id="files-heading">Files</h2>
+  <div class="ui accordion panel mb-10 open" href="#files-list-accordion-panel">
+    <h3 class="active title panel-heading open m-0">
+      <div role="button" id="files-list-accordion-trigger" aria-controls="files-list-accordion-panel" aria-expanded="true" tabindex="0" class="trigger">
+        Files
+        <small class="text-muted"> (34.5 GB)</small>
+        <i class="angle right icon" aria-hidden="true"></i>
+      </div>
+    </h3>
+
+    <div role="region" id="files-list-accordion-panel" aria-labelledby="files-list-accordion-trigger" class="active content pt-0">
+      
+      <div>
+        
+  <table id="file-list-table" class="ui striped table files fluid open">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Size</th>
+        <th class>
+            
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+    
+      
+        
+        
+        <tr>
+          <td class="ten wide">
+            <div>
+              <a href="/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz?download=1">ASVspoof2021_DF_eval_part00.tar.gz</a>
+            </div>
+            <small class="ui text-muted font-tiny">md5:4f2cbae07cf3ede2a1dde3b8d2ee55ea
+            <div class="ui icon inline-block" data-tooltip="This is the file fingerprint (checksum), which can be used to verify the file integrity.">
+              <i class="question circle checksum icon"></i>
+            </div>
+            </small>
+          </td>
+	  <td>8.6 GB</td>
+          <td class="right aligned">
+            <span>
+              
+              <a role="button" class="ui compact mini button" href="/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz?download=1">
+                <i class="download icon" aria-hidden="true"></i>Download
+              </a>
+            </span>
+          </td>
+        </tr>
+      
+    
+      
+        
+        
+        <tr>
+          <td class="ten wide">
+            <div>
+              <a href="/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz?download=1">ASVspoof2021_DF_eval_part01.tar.gz</a>
+            </div>
+            <small class="ui text-muted font-tiny">md5:1578c89ab433c2b60b1dce93bdf8fbec
+            <div class="ui icon inline-block" data-tooltip="This is the file fingerprint (checksum), which can be used to verify the file integrity.">
+              <i class="question circle checksum icon"></i>
+            </div>
+            </small>
+          </td>
+	  <td>8.6 GB</td>
+          <td class="right aligned">
+            <span>
+              
+              <a role="button" class="ui compact mini button" href="/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz?download=1">
+                <i class="download icon" aria-hidden="true"></i>Download
+              </a>
+            </span>
+          </td>
+        </tr>
+      
+    
+      
+        
+        
+        <tr>
+          <td class="ten wide">
+            <div>
+              <a href="/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz?download=1">ASVspoof2021_DF_eval_part02.tar.gz</a>
+            </div>
+            <small class="ui text-muted font-tiny">md5:5497a35f0126e94a1d7a7d26db57b4f7
+            <div class="ui icon inline-block" data-tooltip="This is the file fingerprint (checksum), which can be used to verify the file integrity.">
+              <i class="question circle checksum icon"></i>
+            </div>
+            </small>
+          </td>
+	  <td>8.6 GB</td>
+          <td class="right aligned">
+            <span>
+              
+              <a role="button" class="ui compact mini button" href="/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz?download=1">
+                <i class="download icon" aria-hidden="true"></i>Download
+              </a>
+            </span>
+          </td>
+        </tr>
+      
+    
+      
+        
+        
+        <tr>
+          <td class="ten wide">
+            <div>
+              <a href="/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz?download=1">ASVspoof2021_DF_eval_part03.tar.gz</a>
+            </div>
+            <small class="ui text-muted font-tiny">md5:42b7512ba2943e98a32a53c9608cf83c
+            <div class="ui icon inline-block" data-tooltip="This is the file fingerprint (checksum), which can be used to verify the file integrity.">
+              <i class="question circle checksum icon"></i>
+            </div>
+            </small>
+          </td>
+	  <td>8.7 GB</td>
+          <td class="right aligned">
+            <span>
+              
+              <a role="button" class="ui compact mini button" href="/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz?download=1">
+                <i class="download icon" aria-hidden="true"></i>Download
+              </a>
+            </span>
+          </td>
+        </tr>
+      
+    
+    </tbody>
+  </table>
+      </div>
+    </div>
+  </div>
+
+    </section>
+              
+
+  <section id="additional-details" class="rel-mt-2" aria-label="Additional record details">
+
+
+
+
+
+
+
+
+
+
+
+  <h2 id="record-details-heading">Additional details</h2>
+
+  <div class="ui divider"></div>
+
+  
+
+  
+
+  
+
+  
+   
+      <div class="ui grid">
+        <div class="sixteen wide mobile four wide tablet three wide computer column">
+          <h3 class="ui header">Funding</h3>
+        </div>
+        <div class="sixteen wide mobile twelve wide tablet thirteen wide computer column">
+          <dl class="details-list">
+            
+  
+    
+  <dt class="ui tiny header">Agence Nationale de la Recherche</dt><dt class="ui tiny header">
+    <span class="mr-0 text-muted">
+      
+        RESPECT -
+      Reliable, secure and privacy preserving multi-biometric person authentication</span><span class="ui mini basic label " id="number-label-0">
+        ANR-18-CE92-0024
+      </span></dt>
+  
+    
+  <dt class="ui tiny header">Research Council of Finland</dt><dt class="ui tiny header">
+    <span class="mr-0 text-muted">
+      NOTCH: NOn-cooperaTive speaker CHaracterization</span><span class="ui mini basic label " id="number-label-1">
+        309629
+      </span></dt>
+  
+    
+  <dt class="ui tiny header">Agence Nationale de la Recherche</dt><dt class="ui tiny header">
+    <span class="mr-0 text-muted">
+      
+        VoicePersonae -
+      Speaker identity cloning and protection</span><span class="ui mini basic label " id="number-label-2">
+        ANR-18-JSTS-0001
+      </span></dt>
+  
+
+          </dl>
+        </div>
+      </div>
+    
+    <div class="ui divider"></div>
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  </section>
+    
+    <section
+      id="citations-search"
+      data-record-pids='{"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835108", "provider": "datacite"}, "oai": {"identifier": "oai:zenodo.org:4835108", "provider": "oai"}}'
+      data-record-parent-pids='{"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835107", "provider": "datacite"}}'
+      data-citations-endpoint="https://zenodo-broker.web.cern.ch/api/relationships"
+      aria-label="Record citations"
+      class="rel-mb-1"
+    >
+    </section>
+  
+        </article>
+
+        
+        <aside class="sixteen wide tablet five wide computer column sidebar"
+               aria-label="Record details">
+          
+
+
+
+
+<section id="metrics" aria-label="Metrics" class="ui segment rdm-sidebar sidebar-container">
+
+
+<div class="ui tiny two statistics rel-mt-1">
+  
+  
+
+  <div class="ui statistic">
+    <div class="value">26K</div>
+    <div class="label">
+      <i aria-hidden="true" class="eye icon"></i>
+      Views
+    </div>
+  </div>
+
+  <div class="ui statistic">
+    <div class="value">31K</div>
+    <div class="label">
+      <i aria-hidden="true" class="download icon"></i>
+      Downloads
+    </div>
+  </div>
+</div>
+
+<div class="ui accordion rel-mt-1 centered">
+  <div class="title trigger" tabindex="0">
+    <i class="caret right icon" aria-hidden="true"></i>
+    <span
+      data-open-text="Show more details"
+      data-close-text="Show less details"
+    >
+      Show more details
+    </span>
+  </div>
+
+  <div class="content">
+    <table id="record-statistics" class="ui definition table fluid">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="right aligned">All versions</th>
+          <th class="right aligned">This version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            Views
+            <i
+              tabindex="0"
+              role="button"
+              style="position:relative"
+              class="popup-trigger question circle small icon"
+              aria-expanded="false"
+              aria-label="More info"
+              data-variation="mini inverted"
+            >
+            </i>
+            <p role="tooltip" class="popup-content ui flowing popup transition hidden">
+              Total views
+            </p>
+          </td>
+          <td data-label="All versions" class="right aligned">
+  
+    25,776
+  
+</td>
+          <td data-label="This version" class="right aligned">
+  
+    25,658
+  
+</td>
+        </tr>
+        <tr>
+          <td>
+            Downloads
+            <i
+              tabindex="0"
+              role="button"
+              style="position:relative"
+              class="popup-trigger question circle small icon"
+              aria-expanded="false"
+              aria-label="More info"
+              data-variation="mini inverted"
+            >
+            </i>
+            <p role="tooltip" class="popup-content ui flowing popup transition hidden">
+              Total downloads
+            </p>
+          </td>
+          <td data-label="All versions" class="right aligned">
+  
+    31,450
+  
+</td>
+          <td data-label="This version" class="right aligned">
+  
+    31,331
+  
+</td>
+        </tr>
+        <tr>
+          <td>
+            Data volume
+            <i
+              tabindex="0"
+              role="button"
+              style="position:relative"
+              class="popup-trigger question circle small icon"
+              aria-expanded="false"
+              aria-label="More info"
+              data-variation="mini inverted"
+            >
+            </i>
+            <p role="tooltip" class="popup-content ui flowing popup transition hidden">
+              Total data volume
+            </p>
+          </td>
+
+          <td data-label="All versions" class="right aligned">808.7 TB</td>
+          <td data-label="This version" class="right aligned">803.4 TB</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-align-center rel-mt-1">
+      <small>
+        <a href="https://zenodo.org/help/statistics">More info on how stats are collected....</a>
+      </small>
+    </p>
+  </div>
+
+</div>
+
+</section>
+
+<div class="sidebar-container">
+  <h2 class="ui medium top attached header mt-0">Versions</h2>
+  <div id="record-versions" class="ui segment rdm-sidebar bottom attached pl-0 pr-0 pt-0">
+    <div class="versions">
+      <div id="recordVersions" data-record='{"access": {"embargo": {"active": false, "reason": null}, "files": "public", "record": "public", "status": "open"}, "created": "2021-05-28T17:04:49.207732+00:00", "custom_fields": {}, "deletion_status": {"is_deleted": false, "status": "P"}, "expanded": {"parent": {"access": {"owned_by": {"active": null, "blocked_at": null, "confirmed_at": null, "email": "", "id": "226313", "is_current_user": false, "links": {"avatar": "https://zenodo.org/api/users/226313/avatar.svg", "records_html": "https://zenodo.org/search?q=parent.access.owned_by.user:226313", "self": "https://zenodo.org/api/users/226313"}, "profile": {"affiliations": "", "full_name": "ASVSpoof Organizer"}, "username": "ASVSpoof", "verified_at": null}}}}, "files": {"count": 4, "enabled": true, "entries": {"ASVspoof2021_DF_eval_part00.tar.gz": {"access": {"hidden": false}, "checksum": "md5:4f2cbae07cf3ede2a1dde3b8d2ee55ea", "ext": "gz", "id": "541488ad-67f1-48a3-a23b-ef6d43eb097c", "key": "ASVspoof2021_DF_eval_part00.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8637050238, "storage_class": "L"}, "ASVspoof2021_DF_eval_part01.tar.gz": {"access": {"hidden": false}, "checksum": "md5:1578c89ab433c2b60b1dce93bdf8fbec", "ext": "gz", "id": "88afff8c-5d79-486f-96a7-da5b3a1b344c", "key": "ASVspoof2021_DF_eval_part01.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8624944890, "storage_class": "L"}, "ASVspoof2021_DF_eval_part02.tar.gz": {"access": {"hidden": false}, "checksum": "md5:5497a35f0126e94a1d7a7d26db57b4f7", "ext": "gz", "id": "4bb5a664-35d8-4630-80a1-bc0781d0234d", "key": "ASVspoof2021_DF_eval_part02.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8616337195, "storage_class": "L"}, "ASVspoof2021_DF_eval_part03.tar.gz": {"access": {"hidden": false}, "checksum": "md5:42b7512ba2943e98a32a53c9608cf83c", "ext": "gz", "id": "fb360ebe-e1c2-413e-b592-2e6553d5e3df", "key": "ASVspoof2021_DF_eval_part03.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8656151261, "storage_class": "L"}}, "order": [], "total_bytes": 34534483584}, "id": "4835108", "is_draft": false, "is_published": true, "links": {"access": "https://zenodo.org/api/records/4835108/access", "access_grants": "https://zenodo.org/api/records/4835108/access/grants", "access_links": "https://zenodo.org/api/records/4835108/access/links", "access_request": "https://zenodo.org/api/records/4835108/access/request", "access_users": "https://zenodo.org/api/records/4835108/access/users", "archive": "https://zenodo.org/api/records/4835108/files-archive", "archive_media": "https://zenodo.org/api/records/4835108/media-files-archive", "communities": "https://zenodo.org/api/records/4835108/communities", "communities-suggestions": "https://zenodo.org/api/records/4835108/communities-suggestions", "doi": "https://doi.org/10.5281/zenodo.4835108", "draft": "https://zenodo.org/api/records/4835108/draft", "file_modification": "https://zenodo.org/api/records/4835108/file-modification", "files": "https://zenodo.org/api/records/4835108/files", "latest": "https://zenodo.org/api/records/4835108/versions/latest", "latest_html": "https://zenodo.org/records/4835108/latest", "media_files": "https://zenodo.org/api/records/4835108/media-files", "parent": "https://zenodo.org/api/records/4835107", "parent_doi": "https://doi.org/10.5281/zenodo.4835107", "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835107", "parent_html": "https://zenodo.org/records/4835107", "preview_html": "https://zenodo.org/records/4835108?preview=1", "quota_increase": "https://zenodo.org/api/records/4835108/quota-increase", "request_deletion": "https://zenodo.org/api/records/4835108/request-deletion", "requests": "https://zenodo.org/api/records/4835108/requests", "reserve_doi": "https://zenodo.org/api/records/4835108/draft/pids/doi", "self": "https://zenodo.org/api/records/4835108", "self_doi": "https://doi.org/10.5281/zenodo.4835108", "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835108", "self_html": "https://zenodo.org/records/4835108", "self_iiif_manifest": "https://zenodo.org/api/iiif/record:4835108/manifest", "self_iiif_sequence": "https://zenodo.org/api/iiif/record:4835108/sequence/default", "versions": "https://zenodo.org/api/records/4835108/versions"}, "media_files": {"count": 0, "enabled": false, "entries": {}, "order": [], "total_bytes": 0}, "metadata": {"creators": [{"affiliations": [{"name": "Nuance Communications Inc., Spain"}], "person_or_org": {"family_name": "Delgado", "given_name": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Evans", "given_name": "Nicholas", "name": "Evans, Nicholas", "type": "personal"}}, {"affiliations": [{"name": "University of Eastern Finland, Finland"}], "person_or_org": {"family_name": "Kinnunen", "given_name": "Tomi", "name": "Kinnunen, Tomi", "type": "personal"}}, {"affiliations": [{"name": "Institute for Infocomm Research, Singapore"}], "person_or_org": {"family_name": "Lee", "given_name": "Kong Aik", "name": "Lee, Kong Aik", "type": "personal"}}, {"affiliations": [{"name": "University of Eastern Finland, Finland"}], "person_or_org": {"family_name": "Liu", "given_name": "Xuechen", "name": "Liu, Xuechen", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Nautsch", "given_name": "Andreas", "name": "Nautsch, Andreas", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Patino", "given_name": "Jose", "name": "Patino, Jose", "type": "personal"}}, {"affiliations": [{"name": "Inria, France"}], "person_or_org": {"family_name": "Sahidullah", "given_name": "Md", "name": "Sahidullah, Md", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Todisco", "given_name": "Massimiliano", "name": "Todisco, Massimiliano", "type": "personal"}}, {"affiliations": [{"name": "National Institute of Informatics, Japan"}], "person_or_org": {"family_name": "Wang", "given_name": "Xin", "name": "Wang, Xin", "type": "personal"}}, {"affiliations": [{"name": "National Institute of Informatics, Japan"}], "person_or_org": {"family_name": "Yamagishi", "given_name": "Junichi", "name": "Yamagishi, Junichi", "type": "personal"}}], "description": "\u003cp\u003e=== Notice ===\u003c/p\u003e\n\n\u003cp\u003eEvaluation keys\u0026nbsp;(bona fide / spoof) and\u0026nbsp;meta-labels\u0026nbsp;can be downloaded from\u0026nbsp;https://www.asvspoof.org/index2021.html.\u003c/p\u003e\n\n\u003cp\u003e============\u003c/p\u003e\n\n\u003cp\u003eThe automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a\u0026nbsp;community-led initiative which aims to promote the consideration of spoofing and the development of\u0026nbsp;countermeasures. \u0026nbsp;ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the\u0026nbsp;goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake\u0026nbsp;speech.\u0026nbsp;\u003cbr\u003e\n\u003cbr\u003e\nASVspoof 2021 comprises three different tasks: \u0026nbsp; \u0026nbsp;\u003cbr\u003e\n\u003cem\u003e\u0026nbsp;Logical access (LA)\u003c/em\u003e: bona fide and spoofed utterances generated using text-to-speech (TTS) and voice\u0026nbsp;conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding\u0026nbsp;and transmission effects;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003ePhysical access (PA)\u003c/em\u003e: bona fide utterances are made in a real, physical space in which spoofing attacks\u0026nbsp;are captured and then replayed within the same physical space using replay devices of varying quality;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003eSpeech deepfake (DF)\u003c/em\u003e: a fake audio detection task comprising bona fide and spoofed utterances\u0026nbsp;generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without\u0026nbsp;speaker verification.\u003cbr\u003e\n\u003cbr\u003e\n\u003cstrong\u003eThis repository provides the evaluation set for the DF task.\u003c/strong\u003e\u003cbr\u003e\n\u003cbr\u003e\nFor more details, please visit our website below. https://www.asvspoof.org\u003c/p\u003e", "funding": [{"award": {"acronym": "RESPECT", "id": "00rbzpz17::ANR-18-CE92-0024", "number": "ANR-18-CE92-0024", "title": {"en": "Reliable, secure and privacy preserving multi-biometric person authentication"}}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}, {"award": {"id": "05k73zm37::309629", "number": "309629", "title": {"en": "NOTCH: NOn-cooperaTive speaker CHaracterization"}}, "funder": {"id": "05k73zm37", "name": "Research Council of Finland"}}, {"award": {"acronym": "VoicePersonae", "id": "00rbzpz17::ANR-18-JSTS-0001", "number": "ANR-18-JSTS-0001", "title": {"en": "Speaker identity cloning and protection"}}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}], "publication_date": "2021-05-28", "publisher": "Zenodo", "resource_type": {"id": "video", "title": {"de": "Video/Audio", "en": "Video/Audio"}}, "rights": [{"description": {"en": ""}, "id": "odbl-1.0", "props": {"scheme": "spdx", "url": "http://www.opendatacommons.org/licenses/odbl/1.0/"}, "title": {"en": "ODC Open Database License v1.0"}}], "subjects": [{"subject": "Speaker recognition"}, {"subject": "Speaker verification"}, {"subject": "ASVspoof"}, {"subject": "Anti-spoofing"}, {"subject": "Presentation attack detection"}, {"subject": "Deepfake detection"}], "title": "ASVspoof 2021 Challenge - Speech Deepfake Database", "version": "1.0"}, "parent": {"access": {"owned_by": {"user": "226313"}, "settings": {"accept_conditions_text": null, "allow_guest_requests": false, "allow_user_requests": false, "secret_link_expiration": 0}}, "communities": {}, "id": "4835107", "pids": {"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835107", "provider": "datacite"}}}, "pids": {"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835108", "provider": "datacite"}, "oai": {"identifier": "oai:zenodo.org:4835108", "provider": "oai"}}, "revision_id": 2, "stats": {"all_versions": {"data_volume": 808733605318027.0, "downloads": 93674, "unique_downloads": 31450, "unique_views": 25776, "views": 29813}, "this_version": {"data_volume": 803361686884360.0, "downloads": 93052, "unique_downloads": 31331, "unique_views": 25658, "views": 29678}}, "status": "published", "swh": {}, "ui": {"access_status": {"description_l10n": "The record and files are publicly accessible.", "embargo_date_l10n": null, "icon": "unlock", "id": "open", "message_class": "", "title_l10n": "Open"}, "created_date_l10n_long": "May 28, 2021", "creators": {"affiliations": [[1, "Nuance Communications Inc., Spain", null], [2, "EURECOM, France", null], [3, "University of Eastern Finland, Finland", null], [4, "Institute for Infocomm Research, Singapore", null], [5, "Inria, France", null], [6, "National Institute of Informatics, Japan", null]], "creators": [{"affiliations": [[1, "Nuance Communications Inc., Spain"]], "person_or_org": {"family_name": "Delgado", "given_name": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Evans", "given_name": "Nicholas", "name": "Evans, Nicholas", "type": "personal"}}, {"affiliations": [[3, "University of Eastern Finland, Finland"]], "person_or_org": {"family_name": "Kinnunen", "given_name": "Tomi", "name": "Kinnunen, Tomi", "type": "personal"}}, {"affiliations": [[4, "Institute for Infocomm Research, Singapore"]], "person_or_org": {"family_name": "Lee", "given_name": "Kong Aik", "name": "Lee, Kong Aik", "type": "personal"}}, {"affiliations": [[3, "University of Eastern Finland, Finland"]], "person_or_org": {"family_name": "Liu", "given_name": "Xuechen", "name": "Liu, Xuechen", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Nautsch", "given_name": "Andreas", "name": "Nautsch, Andreas", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Patino", "given_name": "Jose", "name": "Patino, Jose", "type": "personal"}}, {"affiliations": [[5, "Inria, France"]], "person_or_org": {"family_name": "Sahidullah", "given_name": "Md", "name": "Sahidullah, Md", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Todisco", "given_name": "Massimiliano", "name": "Todisco, Massimiliano", "type": "personal"}}, {"affiliations": [[6, "National Institute of Informatics, Japan"]], "person_or_org": {"family_name": "Wang", "given_name": "Xin", "name": "Wang, Xin", "type": "personal"}}, {"affiliations": [[6, "National Institute of Informatics, Japan"]], "person_or_org": {"family_name": "Yamagishi", "given_name": "Junichi", "name": "Yamagishi, Junichi", "type": "personal"}}]}, "custom_fields": {}, "description_stripped": "=== Notice ===\n\n\nEvaluation keys\u00a0(bona fide / spoof) and\u00a0meta-labels\u00a0can be downloaded from\u00a0https://www.asvspoof.org/index2021.html.\n\n\n============\n\n\nThe automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a\u00a0community-led initiative which aims to promote the consideration of spoofing and the development of\u00a0countermeasures. \u00a0ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the\u00a0goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake\u00a0speech.\u00a0\n\nASVspoof 2021 comprises three different tasks: \u00a0 \u00a0\n\u00a0Logical access (LA): bona fide and spoofed utterances generated using text-to-speech (TTS) and voice\u00a0conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding\u00a0and transmission effects;\n\u00a0 \u00a0\u00a0\nPhysical access (PA): bona fide utterances are made in a real, physical space in which spoofing attacks\u00a0are captured and then replayed within the same physical space using replay devices of varying quality;\n\u00a0 \u00a0\u00a0\nSpeech deepfake (DF): a fake audio detection task comprising bona fide and spoofed utterances\u00a0generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without\u00a0speaker verification.\n\nThis repository provides the evaluation set for the DF task.\n\nFor more details, please visit our website below. https://www.asvspoof.org", "funding": [{"award": {"acronym": "RESPECT", "id": "00rbzpz17::ANR-18-CE92-0024", "number": "ANR-18-CE92-0024", "title_l10n": "Reliable, secure and privacy preserving multi-biometric person authentication"}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}, {"award": {"id": "05k73zm37::309629", "number": "309629", "title_l10n": "NOTCH: NOn-cooperaTive speaker CHaracterization"}, "funder": {"id": "05k73zm37", "name": "Research Council of Finland"}}, {"award": {"acronym": "VoicePersonae", "id": "00rbzpz17::ANR-18-JSTS-0001", "number": "ANR-18-JSTS-0001", "title_l10n": "Speaker identity cloning and protection"}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}], "is_draft": false, "publication_date_l10n_long": "May 28, 2021", "publication_date_l10n_medium": "May 28, 2021", "resource_type": {"id": "video", "title_l10n": "Video/Audio"}, "rights": [{"description_l10n": "", "id": "odbl-1.0", "props": {"scheme": "spdx", "url": "http://www.opendatacommons.org/licenses/odbl/1.0/"}, "title_l10n": "ODC Open Database License v1.0"}], "updated_date_l10n_long": "October 30, 2022", "version": "1.0"}, "updated": "2022-10-30T04:41:27.193185+00:00", "versions": {"index": 1, "is_latest": true}}' data-preview='false'>
+        <div class="rel-p-1"></div>
+        <div class="ui fluid placeholder rel-mr-1 rel-ml-1"></div>
+        <div class="header">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><div class="sidebar-container">
+  <h2 class="ui small top attached header">External resources</h2>
+  <dl id="external-resource" aria-label="External resources" class="ui bottom attached segment rdm-sidebar external resource details-list">
+
+    <dt class="ui tiny header">Indexed in</dt>
+      <ul class="ui list no-bullet m-0">
+              <li class="item flex align-items-center">
+
+                
+                  <img class="ui image" src="/static/images/openaire.svg" alt="" width="32">
+                
+
+                <div class="content">
+                  <a
+                    class="header"
+                    href="https://explore.openaire.eu/search/result?pid=10.5281/zenodo.4835108"
+                    target="_blank"
+                    rel="noreferrer"
+                  >OpenAIRE
+                  </a>
+
+                  </div>
+              </li></ul></dl>
+</div>
+<div
+  id="sidebar-communities-manage"
+  data-user-communities-memberships='{}'
+  data-record-community-endpoint='https://zenodo.org/api/records/4835108/communities'
+  data-record-community-search-endpoint='https://zenodo.org/api/records/4835108/communities-suggestions'
+  data-record-community-search-config='{"aggs": [{"aggName": "type", "field": "type", "title": "Type"}, {"aggName": "funder", "field": "metadata.funding.funder", "title": "Funders"}, {"aggName": "organization", "field": "metadata.organizations", "title": "Organizations"}], "appId": "InvenioAppRdm.RecordCommunitiesSuggestions", "defaultSortingOnEmptyQueryString": [{"sortBy": "newest"}], "initialQueryState": {"filters": [], "hiddenParams": null, "layout": "list", "page": 1, "size": 10, "sortBy": "bestmatch"}, "layoutOptions": {"gridView": false, "listView": true}, "paginationOptions": {"defaultValue": 10, "maxTotalResults": 10000, "resultsPerPage": [{"text": "10", "value": 10}, {"text": "20", "value": 20}]}, "searchApi": {"axios": {"headers": {"Accept": "application/vnd.inveniordm.v1+json"}, "url": "https://zenodo.org/api/records/4835108/communities-suggestions", "withCredentials": true}, "invenio": {"requestSerializer": "InvenioRecordsResourcesRequestSerializer"}}, "sortOptions": [{"sortBy": "bestmatch", "text": "Best match"}, {"sortBy": "newest", "text": "Newest"}, {"sortBy": "oldest", "text": "Oldest"}], "sortOrderDisabled": true}'
+  data-record-user-community-search-endpoint=''
+  data-record-user-community-search-config='{"aggs": [{"aggName": "type", "field": "type", "title": "Type"}, {"aggName": "funder", "field": "metadata.funding.funder", "title": "Funders"}, {"aggName": "organization", "field": "metadata.organizations", "title": "Organizations"}], "appId": "InvenioAppRdm.RecordUserCommunitiesSuggestions", "defaultSortingOnEmptyQueryString": [{"sortBy": "newest"}], "initialQueryState": {"filters": [], "hiddenParams": [["membership", "true"]], "layout": "list", "page": 1, "size": 10, "sortBy": "bestmatch"}, "layoutOptions": {"gridView": false, "listView": true}, "paginationOptions": {"defaultValue": 10, "maxTotalResults": 10000, "resultsPerPage": [{"text": "10", "value": 10}, {"text": "20", "value": 20}]}, "searchApi": {"axios": {"headers": {"Accept": "application/vnd.inveniordm.v1+json"}, "url": "https://zenodo.org/api/records/4835108/communities-suggestions", "withCredentials": true}, "invenio": {"requestSerializer": "InvenioRecordsResourcesRequestSerializer"}}, "sortOptions": [{"sortBy": "bestmatch", "text": "Best match"}, {"sortBy": "newest", "text": "Newest"}, {"sortBy": "oldest", "text": "Oldest"}], "sortOrderDisabled": true}'
+  data-pending-communities-search-config='{"aggs": [{"aggName": "type", "field": "type", "title": "Type"}, {"aggName": "status", "field": "status", "title": "Status"}], "appId": "InvenioAppRdm.RecordRequests", "defaultSortingOnEmptyQueryString": [{"sortBy": "newest"}], "initialQueryState": {"filters": [], "hiddenParams": [["expand", "1"], ["is_open", "true"], ["type", "community-inclusion"], ["type", "community-submission"]], "layout": "list", "page": 1, "size": 10, "sortBy": "bestmatch"}, "layoutOptions": {"gridView": false, "listView": true}, "paginationOptions": {"defaultValue": 10, "maxTotalResults": 10000, "resultsPerPage": [{"text": "10", "value": 10}, {"text": "20", "value": 20}, {"text": "50", "value": 50}]}, "searchApi": {"axios": {"headers": {"Accept": "application/json"}, "url": "https://zenodo.org/api/records/4835108/requests", "withCredentials": true}, "invenio": {"requestSerializer": "InvenioRecordsResourcesRequestSerializer"}}, "sortOptions": [{"sortBy": "bestmatch", "text": "Best match"}, {"sortBy": "newest", "text": "Newest"}, {"sortBy": "oldest", "text": "Oldest"}, {"sortBy": "newestactivity", "text": "Newest activity"}, {"sortBy": "oldestactivity", "text": "Oldest activity"}], "sortOrderDisabled": true}'
+  data-permissions='{"can_edit": false, "can_immediately_delete": false, "can_manage": false, "can_media_read_files": true, "can_moderate": false, "can_new_version": false, "can_read_files": true, "can_remove_community_from_record": false, "can_request_deletion": false, "can_review": false, "can_update_draft": false, "can_view": false, "removable_community_ids": []}'
+  data-record='{"access": {"embargo": {"active": false, "reason": null}, "files": "public", "record": "public", "status": "open"}, "created": "2021-05-28T17:04:49.207732+00:00", "custom_fields": {}, "deletion_status": {"is_deleted": false, "status": "P"}, "expanded": {"parent": {"access": {"owned_by": {"active": null, "blocked_at": null, "confirmed_at": null, "email": "", "id": "226313", "is_current_user": false, "links": {"avatar": "https://zenodo.org/api/users/226313/avatar.svg", "records_html": "https://zenodo.org/search?q=parent.access.owned_by.user:226313", "self": "https://zenodo.org/api/users/226313"}, "profile": {"affiliations": "", "full_name": "ASVSpoof Organizer"}, "username": "ASVSpoof", "verified_at": null}}}}, "files": {"count": 4, "enabled": true, "entries": {"ASVspoof2021_DF_eval_part00.tar.gz": {"access": {"hidden": false}, "checksum": "md5:4f2cbae07cf3ede2a1dde3b8d2ee55ea", "ext": "gz", "id": "541488ad-67f1-48a3-a23b-ef6d43eb097c", "key": "ASVspoof2021_DF_eval_part00.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part00.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8637050238, "storage_class": "L"}, "ASVspoof2021_DF_eval_part01.tar.gz": {"access": {"hidden": false}, "checksum": "md5:1578c89ab433c2b60b1dce93bdf8fbec", "ext": "gz", "id": "88afff8c-5d79-486f-96a7-da5b3a1b344c", "key": "ASVspoof2021_DF_eval_part01.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part01.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8624944890, "storage_class": "L"}, "ASVspoof2021_DF_eval_part02.tar.gz": {"access": {"hidden": false}, "checksum": "md5:5497a35f0126e94a1d7a7d26db57b4f7", "ext": "gz", "id": "4bb5a664-35d8-4630-80a1-bc0781d0234d", "key": "ASVspoof2021_DF_eval_part02.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part02.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8616337195, "storage_class": "L"}, "ASVspoof2021_DF_eval_part03.tar.gz": {"access": {"hidden": false}, "checksum": "md5:42b7512ba2943e98a32a53c9608cf83c", "ext": "gz", "id": "fb360ebe-e1c2-413e-b592-2e6553d5e3df", "key": "ASVspoof2021_DF_eval_part03.tar.gz", "links": {"content": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz/content", "self": "https://zenodo.org/api/records/4835108/files/ASVspoof2021_DF_eval_part03.tar.gz"}, "metadata": null, "mimetype": "application/gzip", "size": 8656151261, "storage_class": "L"}}, "order": [], "total_bytes": 34534483584}, "id": "4835108", "is_draft": false, "is_published": true, "links": {"access": "https://zenodo.org/api/records/4835108/access", "access_grants": "https://zenodo.org/api/records/4835108/access/grants", "access_links": "https://zenodo.org/api/records/4835108/access/links", "access_request": "https://zenodo.org/api/records/4835108/access/request", "access_users": "https://zenodo.org/api/records/4835108/access/users", "archive": "https://zenodo.org/api/records/4835108/files-archive", "archive_media": "https://zenodo.org/api/records/4835108/media-files-archive", "communities": "https://zenodo.org/api/records/4835108/communities", "communities-suggestions": "https://zenodo.org/api/records/4835108/communities-suggestions", "doi": "https://doi.org/10.5281/zenodo.4835108", "draft": "https://zenodo.org/api/records/4835108/draft", "file_modification": "https://zenodo.org/api/records/4835108/file-modification", "files": "https://zenodo.org/api/records/4835108/files", "latest": "https://zenodo.org/api/records/4835108/versions/latest", "latest_html": "https://zenodo.org/records/4835108/latest", "media_files": "https://zenodo.org/api/records/4835108/media-files", "parent": "https://zenodo.org/api/records/4835107", "parent_doi": "https://doi.org/10.5281/zenodo.4835107", "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835107", "parent_html": "https://zenodo.org/records/4835107", "preview_html": "https://zenodo.org/records/4835108?preview=1", "quota_increase": "https://zenodo.org/api/records/4835108/quota-increase", "request_deletion": "https://zenodo.org/api/records/4835108/request-deletion", "requests": "https://zenodo.org/api/records/4835108/requests", "reserve_doi": "https://zenodo.org/api/records/4835108/draft/pids/doi", "self": "https://zenodo.org/api/records/4835108", "self_doi": "https://doi.org/10.5281/zenodo.4835108", "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835108", "self_html": "https://zenodo.org/records/4835108", "self_iiif_manifest": "https://zenodo.org/api/iiif/record:4835108/manifest", "self_iiif_sequence": "https://zenodo.org/api/iiif/record:4835108/sequence/default", "versions": "https://zenodo.org/api/records/4835108/versions"}, "media_files": {"count": 0, "enabled": false, "entries": {}, "order": [], "total_bytes": 0}, "metadata": {"creators": [{"affiliations": [{"name": "Nuance Communications Inc., Spain"}], "person_or_org": {"family_name": "Delgado", "given_name": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Evans", "given_name": "Nicholas", "name": "Evans, Nicholas", "type": "personal"}}, {"affiliations": [{"name": "University of Eastern Finland, Finland"}], "person_or_org": {"family_name": "Kinnunen", "given_name": "Tomi", "name": "Kinnunen, Tomi", "type": "personal"}}, {"affiliations": [{"name": "Institute for Infocomm Research, Singapore"}], "person_or_org": {"family_name": "Lee", "given_name": "Kong Aik", "name": "Lee, Kong Aik", "type": "personal"}}, {"affiliations": [{"name": "University of Eastern Finland, Finland"}], "person_or_org": {"family_name": "Liu", "given_name": "Xuechen", "name": "Liu, Xuechen", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Nautsch", "given_name": "Andreas", "name": "Nautsch, Andreas", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Patino", "given_name": "Jose", "name": "Patino, Jose", "type": "personal"}}, {"affiliations": [{"name": "Inria, France"}], "person_or_org": {"family_name": "Sahidullah", "given_name": "Md", "name": "Sahidullah, Md", "type": "personal"}}, {"affiliations": [{"name": "EURECOM, France"}], "person_or_org": {"family_name": "Todisco", "given_name": "Massimiliano", "name": "Todisco, Massimiliano", "type": "personal"}}, {"affiliations": [{"name": "National Institute of Informatics, Japan"}], "person_or_org": {"family_name": "Wang", "given_name": "Xin", "name": "Wang, Xin", "type": "personal"}}, {"affiliations": [{"name": "National Institute of Informatics, Japan"}], "person_or_org": {"family_name": "Yamagishi", "given_name": "Junichi", "name": "Yamagishi, Junichi", "type": "personal"}}], "description": "\u003cp\u003e=== Notice ===\u003c/p\u003e\n\n\u003cp\u003eEvaluation keys\u0026nbsp;(bona fide / spoof) and\u0026nbsp;meta-labels\u0026nbsp;can be downloaded from\u0026nbsp;https://www.asvspoof.org/index2021.html.\u003c/p\u003e\n\n\u003cp\u003e============\u003c/p\u003e\n\n\u003cp\u003eThe automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a\u0026nbsp;community-led initiative which aims to promote the consideration of spoofing and the development of\u0026nbsp;countermeasures. \u0026nbsp;ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the\u0026nbsp;goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake\u0026nbsp;speech.\u0026nbsp;\u003cbr\u003e\n\u003cbr\u003e\nASVspoof 2021 comprises three different tasks: \u0026nbsp; \u0026nbsp;\u003cbr\u003e\n\u003cem\u003e\u0026nbsp;Logical access (LA)\u003c/em\u003e: bona fide and spoofed utterances generated using text-to-speech (TTS) and voice\u0026nbsp;conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding\u0026nbsp;and transmission effects;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003ePhysical access (PA)\u003c/em\u003e: bona fide utterances are made in a real, physical space in which spoofing attacks\u0026nbsp;are captured and then replayed within the same physical space using replay devices of varying quality;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003eSpeech deepfake (DF)\u003c/em\u003e: a fake audio detection task comprising bona fide and spoofed utterances\u0026nbsp;generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without\u0026nbsp;speaker verification.\u003cbr\u003e\n\u003cbr\u003e\n\u003cstrong\u003eThis repository provides the evaluation set for the DF task.\u003c/strong\u003e\u003cbr\u003e\n\u003cbr\u003e\nFor more details, please visit our website below. https://www.asvspoof.org\u003c/p\u003e", "funding": [{"award": {"acronym": "RESPECT", "id": "00rbzpz17::ANR-18-CE92-0024", "number": "ANR-18-CE92-0024", "title": {"en": "Reliable, secure and privacy preserving multi-biometric person authentication"}}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}, {"award": {"id": "05k73zm37::309629", "number": "309629", "title": {"en": "NOTCH: NOn-cooperaTive speaker CHaracterization"}}, "funder": {"id": "05k73zm37", "name": "Research Council of Finland"}}, {"award": {"acronym": "VoicePersonae", "id": "00rbzpz17::ANR-18-JSTS-0001", "number": "ANR-18-JSTS-0001", "title": {"en": "Speaker identity cloning and protection"}}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}], "publication_date": "2021-05-28", "publisher": "Zenodo", "resource_type": {"id": "video", "title": {"de": "Video/Audio", "en": "Video/Audio"}}, "rights": [{"description": {"en": ""}, "id": "odbl-1.0", "props": {"scheme": "spdx", "url": "http://www.opendatacommons.org/licenses/odbl/1.0/"}, "title": {"en": "ODC Open Database License v1.0"}}], "subjects": [{"subject": "Speaker recognition"}, {"subject": "Speaker verification"}, {"subject": "ASVspoof"}, {"subject": "Anti-spoofing"}, {"subject": "Presentation attack detection"}, {"subject": "Deepfake detection"}], "title": "ASVspoof 2021 Challenge - Speech Deepfake Database", "version": "1.0"}, "parent": {"access": {"owned_by": {"user": "226313"}, "settings": {"accept_conditions_text": null, "allow_guest_requests": false, "allow_user_requests": false, "secret_link_expiration": 0}}, "communities": {}, "id": "4835107", "pids": {"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835107", "provider": "datacite"}}}, "pids": {"doi": {"client": "datacite", "identifier": "10.5281/zenodo.4835108", "provider": "datacite"}, "oai": {"identifier": "oai:zenodo.org:4835108", "provider": "oai"}}, "revision_id": 2, "stats": {"all_versions": {"data_volume": 808733605318027.0, "downloads": 93674, "unique_downloads": 31450, "unique_views": 25776, "views": 29813}, "this_version": {"data_volume": 803361686884360.0, "downloads": 93052, "unique_downloads": 31331, "unique_views": 25658, "views": 29678}}, "status": "published", "swh": {}, "ui": {"access_status": {"description_l10n": "The record and files are publicly accessible.", "embargo_date_l10n": null, "icon": "unlock", "id": "open", "message_class": "", "title_l10n": "Open"}, "created_date_l10n_long": "May 28, 2021", "creators": {"affiliations": [[1, "Nuance Communications Inc., Spain", null], [2, "EURECOM, France", null], [3, "University of Eastern Finland, Finland", null], [4, "Institute for Infocomm Research, Singapore", null], [5, "Inria, France", null], [6, "National Institute of Informatics, Japan", null]], "creators": [{"affiliations": [[1, "Nuance Communications Inc., Spain"]], "person_or_org": {"family_name": "Delgado", "given_name": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Evans", "given_name": "Nicholas", "name": "Evans, Nicholas", "type": "personal"}}, {"affiliations": [[3, "University of Eastern Finland, Finland"]], "person_or_org": {"family_name": "Kinnunen", "given_name": "Tomi", "name": "Kinnunen, Tomi", "type": "personal"}}, {"affiliations": [[4, "Institute for Infocomm Research, Singapore"]], "person_or_org": {"family_name": "Lee", "given_name": "Kong Aik", "name": "Lee, Kong Aik", "type": "personal"}}, {"affiliations": [[3, "University of Eastern Finland, Finland"]], "person_or_org": {"family_name": "Liu", "given_name": "Xuechen", "name": "Liu, Xuechen", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Nautsch", "given_name": "Andreas", "name": "Nautsch, Andreas", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Patino", "given_name": "Jose", "name": "Patino, Jose", "type": "personal"}}, {"affiliations": [[5, "Inria, France"]], "person_or_org": {"family_name": "Sahidullah", "given_name": "Md", "name": "Sahidullah, Md", "type": "personal"}}, {"affiliations": [[2, "EURECOM, France"]], "person_or_org": {"family_name": "Todisco", "given_name": "Massimiliano", "name": "Todisco, Massimiliano", "type": "personal"}}, {"affiliations": [[6, "National Institute of Informatics, Japan"]], "person_or_org": {"family_name": "Wang", "given_name": "Xin", "name": "Wang, Xin", "type": "personal"}}, {"affiliations": [[6, "National Institute of Informatics, Japan"]], "person_or_org": {"family_name": "Yamagishi", "given_name": "Junichi", "name": "Yamagishi, Junichi", "type": "personal"}}]}, "custom_fields": {}, "description_stripped": "=== Notice ===\n\n\nEvaluation keys\u00a0(bona fide / spoof) and\u00a0meta-labels\u00a0can be downloaded from\u00a0https://www.asvspoof.org/index2021.html.\n\n\n============\n\n\nThe automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a\u00a0community-led initiative which aims to promote the consideration of spoofing and the development of\u00a0countermeasures. \u00a0ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the\u00a0goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake\u00a0speech.\u00a0\n\nASVspoof 2021 comprises three different tasks: \u00a0 \u00a0\n\u00a0Logical access (LA): bona fide and spoofed utterances generated using text-to-speech (TTS) and voice\u00a0conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding\u00a0and transmission effects;\n\u00a0 \u00a0\u00a0\nPhysical access (PA): bona fide utterances are made in a real, physical space in which spoofing attacks\u00a0are captured and then replayed within the same physical space using replay devices of varying quality;\n\u00a0 \u00a0\u00a0\nSpeech deepfake (DF): a fake audio detection task comprising bona fide and spoofed utterances\u00a0generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without\u00a0speaker verification.\n\nThis repository provides the evaluation set for the DF task.\n\nFor more details, please visit our website below. https://www.asvspoof.org", "funding": [{"award": {"acronym": "RESPECT", "id": "00rbzpz17::ANR-18-CE92-0024", "number": "ANR-18-CE92-0024", "title_l10n": "Reliable, secure and privacy preserving multi-biometric person authentication"}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}, {"award": {"id": "05k73zm37::309629", "number": "309629", "title_l10n": "NOTCH: NOn-cooperaTive speaker CHaracterization"}, "funder": {"id": "05k73zm37", "name": "Research Council of Finland"}}, {"award": {"acronym": "VoicePersonae", "id": "00rbzpz17::ANR-18-JSTS-0001", "number": "ANR-18-JSTS-0001", "title_l10n": "Speaker identity cloning and protection"}, "funder": {"id": "00rbzpz17", "name": "Agence Nationale de la Recherche"}}], "is_draft": false, "publication_date_l10n_long": "May 28, 2021", "publication_date_l10n_medium": "May 28, 2021", "resource_type": {"id": "video", "title_l10n": "Video/Audio"}, "rights": [{"description_l10n": "", "id": "odbl-1.0", "props": {"scheme": "spdx", "url": "http://www.opendatacommons.org/licenses/odbl/1.0/"}, "title_l10n": "ODC Open Database License v1.0"}], "updated_date_l10n_long": "October 30, 2022", "version": "1.0"}, "updated": "2022-10-30T04:41:27.193185+00:00", "versions": {"index": 1, "is_latest": true}}'
+  data-record-requests='{}'
+  class='sidebar-container'
+>
+
+  <h2 class="ui medium top attached header">Communities</h2>
+
+  <div class="ui segment bottom attached rdm-sidebar">
+    <div class="ui fluid placeholder">
+      <div class="image header">
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="image header">
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+      <div class="image header">
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">Keywords and subjects</h2>
+    <div id="keywords-and-subjects" aria-label="Keywords and subjects"
+            class="ui segment bottom attached rdm-sidebar">
+  
+  
+  <h3 class="hidden">Keywords</h3>
+  <ul class="ui horizontal list no-bullets subjects">
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22Speaker+recognition%22"
+          class="subject"
+          title="Search results for Speaker recognition"
+      >
+        Speaker recognition
+      </a>
+    </li>
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22Speaker+verification%22"
+          class="subject"
+          title="Search results for Speaker verification"
+      >
+        Speaker verification
+      </a>
+    </li>
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22ASVspoof%22"
+          class="subject"
+          title="Search results for ASVspoof"
+      >
+        ASVspoof
+      </a>
+    </li>
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22Anti-spoofing%22"
+          class="subject"
+          title="Search results for Anti-spoofing"
+      >
+        Anti-spoofing
+      </a>
+    </li>
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22Presentation+attack+detection%22"
+          class="subject"
+          title="Search results for Presentation attack detection"
+      >
+        Presentation attack detection
+      </a>
+    </li>
+    <li class="item">
+      <a href="/search?q=metadata.subjects.subject:%22Deepfake+detection%22"
+          class="subject"
+          title="Search results for Deepfake detection"
+      >
+        Deepfake detection
+      </a>
+    </li>
+  </ul>
+  
+
+    </div>
+  </div>
+
+
+<div class="sidebar-container">
+  <h2 class="ui medium top attached header mt-0">Details</h2>
+  <div id="record-details" class="ui segment bottom attached rdm-sidebar">
+
+    <dl class="details-list">
+      
+
+ 
+  <dt class="ui tiny header">DOI
+    
+  </dt>
+  <dd>
+    <span class="get-badge details-doi-section" data-toggle="tooltip" data-placement="bottom">
+      <img id='record-doi-badge' data-target="[data-modal='10.5281/zenodo.4835108']" title="Get the DOI badge!"
+        src="/badge/DOI/10.5281/zenodo.4835108.svg" alt="10.5281/zenodo.4835108" />
+      <div id="copy-button-record-doi-badge" class="copy-doi-button" data-value=https://doi.org/10.5281/zenodo.4835108 data-size="mini"></div>
+    </span>
+
+    <div id="doi-modal" class="ui modal fade badge-modal" data-modal="10.5281/zenodo.4835108">
+      <div class="header">DOI Badge</div>
+      <div class="content">
+        <h4>
+          <small>DOI</small>
+        </h4>
+        <h4>
+          <pre>10.5281/zenodo.4835108</pre>
+        </h4>
+        
+        
+
+    <h3 class="ui small header">
+      Markdown
+    </h3>
+    <div class="ui message code">
+      <pre>[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4835108.svg)](https://doi.org/10.5281/zenodo.4835108)</pre>
+    </div>
+
+    <h3 class="ui small header">
+      reStructuredText
+    </h3>
+      <div class="ui message code">
+        <pre>.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4835108.svg
+  :target: https://doi.org/10.5281/zenodo.4835108</pre>
+      </div>
+
+    <h3 class="ui small header">
+      HTML
+    </h3>
+    <div class="ui message code">
+      <pre>&lt;a href="https://doi.org/10.5281/zenodo.4835108"&gt;&lt;img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4835108.svg" alt="DOI"&gt;&lt;/a&gt;</pre>
+    </div>
+
+    <h3 class="ui small header">
+      Image URL
+    </h3>
+    <div class="ui message code">
+      <pre>https://zenodo.org/badge/DOI/10.5281/zenodo.4835108.svg</pre>
+    </div>
+
+    <h3 class="ui small header">
+    Target URL
+    </h3>
+    <div class="ui message code">
+      <pre>https://doi.org/10.5281/zenodo.4835108</pre>
+    </div>
+      </div>
+    </div>
+  </dd>
+
+      
+      
+  <dt class="ui tiny header">Resource type</dt>
+  <dd>Video/Audio</dd>
+      
+      
+  <dt class="ui tiny header">Publisher</dt>
+  <dd>Zenodo</dd>
+      
+      
+      
+      
+      
+      
+      
+    </dl>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+  <div class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">Rights</h2>
+    <div id="licenses" class="ui segment bottom attached rdm-sidebar">
+      <dl class="details-list">
+      
+        <dt class="ui tiny header">License</dt><dd id="license-odbl-1.0-1" class="has-popup">
+              <div id="title-odbl-1.0-1"
+                   class="license clickable"
+                   tabindex="0"
+                   aria-haspopup="dialog"
+                   aria-expanded="false"
+                   role="button"
+                   aria-label="ODC Open Database License v1.0"
+              >
+                
+                <span class="title-text">
+                ODC Open Database License v1.0
+              </span>
+              </div>
+              <div id="description-odbl-1.0-1"
+                   class="licenses-description ui flowing popup transition hidden"
+                   role="dialog"
+                   aria-labelledby="title-odbl-1.0-1"
+              >
+                <i role="button" tabindex="0" class="close icon text-muted"
+                   aria-label="Close"></i>
+                <div id="license-description-1" class="description">
+                <span class="text-muted">
+                  No further description.
+                </span>
+                  
+  
+    <a class="license-link" href="http://www.opendatacommons.org/licenses/odbl/1.0/" target="_blank"
+       title="Opens in new tab">Read more</a>
+  
+
+                </div>
+              </div>
+            </dd>
+          
+      
+      
+      </dl>
+    </div>
+  </div>
+
+<div class="sidebar-container">
+  <h2 class="ui medium top attached header mt-0">Citation</h2>
+  <div id="citation" class="ui segment bottom attached rdm-sidebar">
+
+<div id="recordCitation" data-record-links='{"access": "https://zenodo.org/api/records/4835108/access", "access_grants": "https://zenodo.org/api/records/4835108/access/grants", "access_links": "https://zenodo.org/api/records/4835108/access/links", "access_request": "https://zenodo.org/api/records/4835108/access/request", "access_users": "https://zenodo.org/api/records/4835108/access/users", "archive": "https://zenodo.org/api/records/4835108/files-archive", "archive_media": "https://zenodo.org/api/records/4835108/media-files-archive", "communities": "https://zenodo.org/api/records/4835108/communities", "communities-suggestions": "https://zenodo.org/api/records/4835108/communities-suggestions", "doi": "https://doi.org/10.5281/zenodo.4835108", "draft": "https://zenodo.org/api/records/4835108/draft", "file_modification": "https://zenodo.org/api/records/4835108/file-modification", "files": "https://zenodo.org/api/records/4835108/files", "latest": "https://zenodo.org/api/records/4835108/versions/latest", "latest_html": "https://zenodo.org/records/4835108/latest", "media_files": "https://zenodo.org/api/records/4835108/media-files", "parent": "https://zenodo.org/api/records/4835107", "parent_doi": "https://doi.org/10.5281/zenodo.4835107", "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835107", "parent_html": "https://zenodo.org/records/4835107", "preview_html": "https://zenodo.org/records/4835108?preview=1", "quota_increase": "https://zenodo.org/api/records/4835108/quota-increase", "request_deletion": "https://zenodo.org/api/records/4835108/request-deletion", "requests": "https://zenodo.org/api/records/4835108/requests", "reserve_doi": "https://zenodo.org/api/records/4835108/draft/pids/doi", "self": "https://zenodo.org/api/records/4835108", "self_doi": "https://doi.org/10.5281/zenodo.4835108", "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.4835108", "self_html": "https://zenodo.org/records/4835108", "self_iiif_manifest": "https://zenodo.org/api/iiif/record:4835108/manifest", "self_iiif_sequence": "https://zenodo.org/api/iiif/record:4835108/sequence/default", "versions": "https://zenodo.org/api/records/4835108/versions"}'
+  data-styles='[["apa", "APA"], ["harvard-cite-them-right", "Harvard"], ["modern-language-association", "MLA"], ["nlm-citation-sequence", "Vancouver"], ["chicago-notes-bibliography", "Chicago"], ["ieee", "IEEE"]]'
+  data-defaultstyle='"apa"'
+  data-include-deleted='false'>
+</div>
+  </div>
+</div>
+  <div class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">Export</h2>
+    <div id="export-record" class="ui segment bottom attached exports rdm-sidebar">
+
+      
+      
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <div id="recordExportDownload" data-formats='[{"export_url": "/records/4835108/export/json", "name": "JSON"}, {"export_url": "/records/4835108/export/json-ld", "name": "JSON-LD"}, {"export_url": "/records/4835108/export/csl", "name": "CSL"}, {"export_url": "/records/4835108/export/datacite-json", "name": "DataCite JSON"}, {"export_url": "/records/4835108/export/datacite-xml", "name": "DataCite XML"}, {"export_url": "/records/4835108/export/dublincore", "name": "Dublin Core XML"}, {"export_url": "/records/4835108/export/marcxml", "name": "MARCXML"}, {"export_url": "/records/4835108/export/bibtex", "name": "BibTeX"}, {"export_url": "/records/4835108/export/geojson", "name": "GeoJSON"}, {"export_url": "/records/4835108/export/dcat-ap", "name": "DCAT"}, {"export_url": "/records/4835108/export/codemeta", "name": "Codemeta"}, {"export_url": "/records/4835108/export/cff", "name": "Citation File Format"}, {"export_url": "/records/4835108/export/datapackage", "name": "Data Package JSON"}]'></div>
+    </div>
+  </div>
+
+<section
+  id="upload-info"
+  role="note"
+  aria-label="Upload information"
+  class="sidebar-container ui segment rdm-sidebar text-muted"
+>
+  <h2 class="ui small header text-muted p-0 mb-5"><small>Technical metadata</small></h2>
+  <dl class="m-0">
+    <dt class="inline"><small>Created</small></dt>
+    <dd class="inline">
+      <small>May 28, 2021</small>
+    </dd>
+    <div>
+      <dt class="rel-mt-1 inline"><small>Modified</small></dt>
+      <dd class="inline">
+        <small>October 30, 2022</small>
+      </dd>
+    </div>
+  </dl>
+</section>
+          
+        </aside>
+      </div>
+    </div>
+
+    <div class="ui container">
+      <div class="ui relaxed grid">
+        <div class="two column row">
+          <div class="sixteen wide tablet eleven wide computer column">
+            <div class="ui grid">
+                <div class="centered row rel-mt-1">
+                  <button id="jump-btn" class="jump-to-top ui button labeled icon"
+                          aria-label="Jump to top of page">
+                    <i class="arrow alternate circle up outline icon"></i>
+                    Jump up
+                  </button>
+                </div>
+              </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </main>
+    <footer id="rdm-footer-element">
+        
+
+  <div class="footer-top">
+    <div class="ui container app-rdm-footer">
+<div class="ui equal width stackable grid zenodo-footer">
+  <div class="column">
+    <h2 class="ui inverted tiny header">About</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://about.zenodo.org">About</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/policies">Policies</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/infrastructure">Infrastructure</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/principles">Principles</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/projects/">Projects</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/roadmap/">Roadmap</a>
+      </li>
+      <li class="item">
+        <a href="https://about.zenodo.org/contact">Contact</a>
+      </li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2 class="ui inverted tiny header">Blog</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://blog.zenodo.org">Blog</a>
+      </li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2 class="ui inverted tiny header">Support</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://help.zenodo.org/">Help</a>
+      </li>
+      <li class="item">
+        <a href="https://support.zenodo.org/help/">FAQ</a>
+      </li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2 class="ui inverted tiny header">Developers</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://developers.zenodo.org">REST API</a>
+      </li>
+      <li class="item">
+        <a href="https://developers.zenodo.org#oai-pmh">OAI-PMH</a>
+      </li>
+    </ul>
+  </div>
+  <div class="column">
+    <h2 class="ui inverted tiny header">Contribute</h2>
+    <ul class="ui inverted link list">
+      <li class="item">
+        <a href="https://github.com/zenodo/zenodo-rdm">
+          <i class="icon external" aria-hidden="true"></i>
+          GitHub
+        </a>
+      </li>
+      <li class="item">
+        <a href="/donate">
+          <i class="icon external" aria-hidden="true"></i>
+          Donate
+        </a>
+      </li>
+    </ul>
+  </div>
+      <div class="six wide column right aligned">
+  <h2 class="ui inverted tiny header">Funded by</h2>
+  <ul class="ui horizontal link list">
+    <li class="item">
+      <a href="https://home.cern" aria-label="CERN">
+        <img src="/static/images/cern.png" width="60" height="60" alt="" />
+      </a>
+    </li>
+    <li class="item">
+      <a href="https://www.openaire.eu" aria-label="OpenAIRE">
+        <img src="/static/images/openaire.png" width="60" height="60" alt="" />
+      </a>
+    </li>
+    <li class="item">
+      <a href="https://commission.europa.eu/index_en" aria-label="European Commission">
+        <img src="/static/images/eu.png" width="88" height="60" alt="" />
+      </a>
+    </li>
+  </ul>
+      </div>
+      </div>
+    </div>
+
+  </div>
+        
+<div class="footer-bottom">
+  <div class="ui inverted container">
+    <div class="ui grid">
+      <div class="eight wide column left middle aligned">
+        <p class="m-0">
+          Powered by
+          <a href="https://home.cern/science/computing/data-centre">CERN Data Centre</a> & <a href="https://inveniordm.docs.cern.ch/">InvenioRDM</a>
+        </p>
+      </div>
+      <div class="eight wide column right aligned">
+        <ul class="ui inverted horizontal link list">
+          <li class="item">
+            <a href="https://stats.uptimerobot.com/vlYOVuWgM/">Status</a>
+          </li>
+          <li class="item">
+            <a href="https://about.zenodo.org/privacy-policy">Privacy policy</a>
+          </li>
+          <li class="item">
+            <a href="https://about.zenodo.org/cookie-policy">Cookie policy</a>
+          </li>
+          <li class="item">
+            <a href="https://about.zenodo.org/terms">Terms of Use</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+    </footer>
+  
+  
+    
+
+        
+          <script type="text/javascript">
+            window.MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true // Allows escaping $ signs if needed
+              }
+            };
+          </script>
+          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+
+        
+<script src="/static/dist/js/manifest.19e7088b1d606958.js"></script>
+<script src="/static/dist/js/2210.0ab43f134e1f4741.js"></script>
+<script src="/static/dist/js/6874.65ec0a8b2c6353ef.js"></script>
+<script src="/static/dist/js/theme.94dcfaf40ce89fce.js"></script>
+<script src="/static/dist/js/9516.90bfb7abfc1a57cc.js"></script>
+<script src="/static/dist/js/4993.8b71b9b033297984.js"></script>
+<script src="/static/dist/js/1514.d8373180d308ebb1.js"></script>
+<script src="/static/dist/js/7211.6d2b6f902ee9e311.js"></script>
+<script src="/static/dist/js/6555.699b01c9afd09bbc.js"></script>
+<script src="/static/dist/js/2028.1d4b59f583a7c22e.js"></script>
+<script src="/static/dist/js/9515.2e7aeb0a90110547.js"></script>
+<script src="/static/dist/js/1242.6d3433e37788315a.js"></script>
+<script src="/static/dist/js/4413.6964d435bb536ad3.js"></script>
+<script src="/static/dist/js/1930.5c46a3667e424fff.js"></script>
+<script src="/static/dist/js/700.874be66ad204dbca.js"></script>
+<script src="/static/dist/js/8532.08a266dd14b72292.js"></script>
+<script src="/static/dist/js/1246.6ee2537656af5076.js"></script>
+<script src="/static/dist/js/2620.bf73f48484645965.js"></script>
+<script src="/static/dist/js/7954.0f565d246955cad5.js"></script>
+<script src="/static/dist/js/base-theme-rdm.7c5ef1e992944e6e.js"></script>
+<script src="/static/dist/js/i18n_app.f29ad99db6b3d7b0.js"></script>
+<script src="/static/dist/js/1947.077e50def0d12fe6.js"></script>
+<script src="/static/dist/js/5250.accef40e35b05da8.js"></script>
+<script src="/static/dist/js/overridable-registry.1f90648db5424404.js"></script>
+  
+    
+      <script type='application/ld+json'>{"@context": "http://schema.org", "@id": "https://doi.org/10.5281/zenodo.4835108", "@type": "https://schema.org/MediaObject", "author": [{"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Nuance Communications Inc., Spain"}], "familyName": "Delgado", "givenName": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Evans", "givenName": "Nicholas", "name": "Evans, Nicholas"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "University of Eastern Finland, Finland"}], "familyName": "Kinnunen", "givenName": "Tomi", "name": "Kinnunen, Tomi"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Institute for Infocomm Research, Singapore"}], "familyName": "Lee", "givenName": "Kong Aik", "name": "Lee, Kong Aik"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "University of Eastern Finland, Finland"}], "familyName": "Liu", "givenName": "Xuechen", "name": "Liu, Xuechen"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Nautsch", "givenName": "Andreas", "name": "Nautsch, Andreas"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Patino", "givenName": "Jose", "name": "Patino, Jose"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Inria, France"}], "familyName": "Sahidullah", "givenName": "Md", "name": "Sahidullah, Md"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Todisco", "givenName": "Massimiliano", "name": "Todisco, Massimiliano"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "National Institute of Informatics, Japan"}], "familyName": "Wang", "givenName": "Xin", "name": "Wang, Xin"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "National Institute of Informatics, Japan"}], "familyName": "Yamagishi", "givenName": "Junichi", "name": "Yamagishi, Junichi"}], "contentSize": "32.16 GB", "creator": [{"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Nuance Communications Inc., Spain"}], "familyName": "Delgado", "givenName": "H\u00e9ctor", "name": "Delgado, H\u00e9ctor"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Evans", "givenName": "Nicholas", "name": "Evans, Nicholas"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "University of Eastern Finland, Finland"}], "familyName": "Kinnunen", "givenName": "Tomi", "name": "Kinnunen, Tomi"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Institute for Infocomm Research, Singapore"}], "familyName": "Lee", "givenName": "Kong Aik", "name": "Lee, Kong Aik"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "University of Eastern Finland, Finland"}], "familyName": "Liu", "givenName": "Xuechen", "name": "Liu, Xuechen"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Nautsch", "givenName": "Andreas", "name": "Nautsch, Andreas"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Patino", "givenName": "Jose", "name": "Patino, Jose"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "Inria, France"}], "familyName": "Sahidullah", "givenName": "Md", "name": "Sahidullah, Md"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "EURECOM, France"}], "familyName": "Todisco", "givenName": "Massimiliano", "name": "Todisco, Massimiliano"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "National Institute of Informatics, Japan"}], "familyName": "Wang", "givenName": "Xin", "name": "Wang, Xin"}, {"@type": "Person", "affiliation": [{"@type": "Organization", "name": "National Institute of Informatics, Japan"}], "familyName": "Yamagishi", "givenName": "Junichi", "name": "Yamagishi, Junichi"}], "dateCreated": "2021-05-28T17:04:49.207732+00:00", "dateModified": "2022-10-30T04:41:27.193185+00:00", "datePublished": "2021-05-28", "description": "\u003cp\u003e=== Notice ===\u003c/p\u003e\n\n\u003cp\u003eEvaluation keys\u0026nbsp;(bona fide / spoof) and\u0026nbsp;meta-labels\u0026nbsp;can be downloaded from\u0026nbsp;https://www.asvspoof.org/index2021.html.\u003c/p\u003e\n\n\u003cp\u003e============\u003c/p\u003e\n\n\u003cp\u003eThe automatic speaker verification spoofing and countermeasures (ASVspoof) challenge series is a\u0026nbsp;community-led initiative which aims to promote the consideration of spoofing and the development of\u0026nbsp;countermeasures. \u0026nbsp;ASVspoof 2021 is the 4th in a series of bi-annual, competitive challenges where the\u0026nbsp;goal is to develop countermeasures capable of discriminating between bona fide and spoofed or deepfake\u0026nbsp;speech.\u0026nbsp;\u003cbr\u003e\n\u003cbr\u003e\nASVspoof 2021 comprises three different tasks: \u0026nbsp; \u0026nbsp;\u003cbr\u003e\n\u003cem\u003e\u0026nbsp;Logical access (LA)\u003c/em\u003e: bona fide and spoofed utterances generated using text-to-speech (TTS) and voice\u0026nbsp;conversion (VC) algorithms are communicated across telephony and VoIP networks with various coding\u0026nbsp;and transmission effects;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003ePhysical access (PA)\u003c/em\u003e: bona fide utterances are made in a real, physical space in which spoofing attacks\u0026nbsp;are captured and then replayed within the same physical space using replay devices of varying quality;\u003cbr\u003e\n\u0026nbsp; \u0026nbsp;\u0026nbsp;\u003cbr\u003e\n\u003cem\u003eSpeech deepfake (DF)\u003c/em\u003e: a fake audio detection task comprising bona fide and spoofed utterances\u0026nbsp;generated using TTS and VC algorithms. Similar to the LA task (includes compressed data) but without\u0026nbsp;speaker verification.\u003cbr\u003e\n\u003cbr\u003e\n\u003cstrong\u003eThis repository provides the evaluation set for the DF task.\u003c/strong\u003e\u003cbr\u003e\n\u003cbr\u003e\nFor more details, please visit our website below. https://www.asvspoof.org\u003c/p\u003e", "funding": [{"funder": {"@id": "00rbzpz17", "@type": "Organization", "name": "Agence Nationale de la Recherche"}, "identifier": "00rbzpz17::ANR-18-CE92-0024", "name": "Reliable, secure and privacy preserving multi-biometric person authentication (ANR-18-CE92-0024)"}, {"funder": {"@id": "05k73zm37", "@type": "Organization", "name": "Research Council of Finland"}, "identifier": "05k73zm37::309629", "name": "NOTCH: NOn-cooperaTive speaker CHaracterization (309629)"}, {"funder": {"@id": "00rbzpz17", "@type": "Organization", "name": "Agence Nationale de la Recherche"}, "identifier": "00rbzpz17::ANR-18-JSTS-0001", "name": "Speaker identity cloning and protection (ANR-18-JSTS-0001)"}], "identifier": "https://doi.org/10.5281/zenodo.4835108", "keywords": "Speaker recognition, Speaker verification, ASVspoof, Anti-spoofing, Presentation attack detection, Deepfake detection", "license": "http://www.opendatacommons.org/licenses/odbl/1.0/", "name": "ASVspoof 2021 Challenge - Speech Deepfake Database", "publisher": {"@type": "Organization", "name": "Zenodo"}, "size": "32.16 GB", "url": "https://zenodo.org/records/4835108", "version": "1.0"}</script>
+
+  <script src="/static/dist/js/invenio-app-rdm-landing-page-theme.99f83766d5a7c257.js"></script>
+  <script src="/static/dist/js/4505.65e1ddec331f7631.js"></script>
+<script src="/static/dist/js/3323.aba018de16e78a1d.js"></script>
+<script src="/static/dist/js/2630.16ae8742145795e7.js"></script>
+<script src="/static/dist/js/1250.81dd6aa993330092.js"></script>
+<script src="/static/dist/js/8397.4af1d10bb000f9fe.js"></script>
+<script src="/static/dist/js/6437.248ead3a7d252d62.js"></script>
+<script src="/static/dist/js/9530.d3064702990e5294.js"></script>
+<script src="/static/dist/js/3646.b86d4a9d2b6df68a.js"></script>
+<script src="/static/dist/js/8193.626ce6377d6899de.js"></script>
+<script src="/static/dist/js/5261.6505c7b9c606d47b.js"></script>
+<script src="/static/dist/js/8646.db54e63cdb0062a6.js"></script>
+<script src="/static/dist/js/9150.e726f5a111882ff0.js"></script>
+<script src="/static/dist/js/1030.de6c5cb38086308e.js"></script>
+<script src="/static/dist/js/invenio-app-rdm-landing-page.40417ce8adc8910d.js"></script>
+  <script src="/static/dist/js/previewer_theme.ff6c7d90d51d22c5.js"></script>
+  <script src="/static/dist/js/zenodo-rdm-citations.5bf7a58075b014db.js"></script>
+  
+
+        <div class="ui container info message cookie-banner hidden">
+  <i class="close icon"></i>
+  <div>
+    <i aria-hidden="true" class="info icon"></i>
+    <p class="inline">This site uses cookies. Find out more on <a href="https://about.zenodo.org/cookie-policy">how we use cookies</a></p>
+  </div>
+  <div class="buttons">
+    <button class="ui button small primary" id="cookies-all">Accept all cookies</button>
+    <button class="ui button small" id="cookies-essential">Accept only essential cookies</button>
+  </div>
+</div>
+
+<script>
+  var _paq = window._paq = window._paq || [];
+  _paq.push(['requireCookieConsent']);
+
+  (function() {
+    var u="https://webanalytics.web.cern.ch/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '366']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+
+  const cookieConsent = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("cookie_consent="))
+    ?.split("=")[1];
+
+  if (cookieConsent) {
+    if (cookieConsent === "all") {
+      matomo();
+    }
+  } else {
+    document.querySelector(".cookie-banner").classList.remove("hidden")
+    _paq.push(['forgetConsentGiven']);
+  }
+
+  $('.cookie-banner .close')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+      setCookie("cookie_consent","essential");
+    });
+
+  $('#cookies-essential')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+      setCookie("cookie_consent","essential");
+    });
+
+  $('#cookies-all')
+    .on('click', function () {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+      setCookie("cookie_consent","all");
+      _paq.push(['rememberCookieConsentGiven']);
+      matomo();
+    });
+
+  function matomo() {
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+  }
+
+  function setCookie(cname, cvalue) {
+    var d = new Date();
+    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // one year
+    var expires = "expires=" + d.toUTCString();
+    var cookie = cname + "=" + cvalue + ";" + expires + ";"
+    cookie += "Domain=zenodo.org;Path=/;SameSite=None; Secure";
+    document.cookie = cookie;
+  }
+</script>
+  </body>
+</html>
