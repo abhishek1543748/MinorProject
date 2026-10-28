@@ -17,7 +17,7 @@ from pathlib import Path
 
 # ── Constants (lock these in — changing them breaks train/infer parity) ──────
 TARGET_SR   = 16000          # model was trained at 16 kHz
-TARGET_LEN  = 64600          # 4.025 seconds at 16 kHz (AASIST standard)
+TARGET_LEN  = 64600          # 4.0375 seconds at 16 kHz (AASIST standard)
 # ─────────────────────────────────────────────────────────────────────────────
 
 

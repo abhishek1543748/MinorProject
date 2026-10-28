@@ -11,6 +11,10 @@ Label convention (same as eval.py):
     0 = bonafide
     1 = spoof
 
+NOTE: this is NOT AASIST's output-class convention (index 1 = bonafide).
+train.py flips labels (1 - label) before the loss. Do not feed these
+labels straight into a loss on AASIST logits.
+
 GOLDEN RULE: all preprocessing goes through src.preprocessing.preprocess.
              Nothing is done here that infer.py doesn't also do.
 """

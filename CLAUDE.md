@@ -19,7 +19,7 @@ Supervised by a professor. Small team. Ideation complete. Now building.
 | Training set | ASVspoof 2019 LA | Standard benchmark, labelled real+fake |
 | Stress test | ASVspoof 2021 DF | Codec-degraded, tests generalization |
 | Contribution | Calibrated 3-band abstain verdict | No commercial tool publishes this |
-| Deployment | Fully local, no API key, no internet at inference | 330KB weight file is the entire model |
+| Deployment | Fully local, no API key, no internet at inference | 426 KB weight file (85,306 params) is the entire model |
 
 **Do NOT use the HuggingFace AASIST port — it is unmaintained.**
 **Use the official repo: github.com/clovaai/aasist**
@@ -107,7 +107,7 @@ The preprocessing module must:
 - Resample to 16000 Hz using polyphase resampler
 - Downmix to mono (average channels)
 - Peak-normalize to [-1, 1]
-- Pad or crop to exactly 64600 samples (4.025 seconds at 16kHz)
+- Pad or crop to exactly 64600 samples (4.0375 seconds at 16kHz)
 - Return a torch.Tensor of shape [1, 64600] dtype float32
 - Accept a `mode` parameter: 'train' applies RawBoost, 'infer' does not
 
@@ -140,7 +140,7 @@ To run a quick 2-epoch smoke test:
 
 ### PHASE 3 — Evaluation & baseline EER (Weeks 5–6)
 **Goal:** EER on ASVspoof 2019 LA eval set.
-Target: ~0.83% EER matching the AASIST-L paper.
+Target: ~0.99% EER matching the AASIST-L paper (0.83% is full AASIST, not AASIST-L).
 If >2%: bug is in preprocessing or data loading, NOT the model.
 Output: `outputs/scores/asvspoof19_LA_eval_scores.csv`
 
@@ -217,9 +217,9 @@ zone vs a confident wrong answer."
 Phase 0 — ✅ COMPLETE. Inference pipeline verified on real ASVspoof2019 LA files.
 Phase 1 — ✅ COMPLETE. Preprocessing parity confirmed; all 10 tests pass.
 Phase 2 — ✅ COMPLETE. Training pipeline fully wired, dataset collator tested, and unit test suite verified (tests/test_phase2.py 4/4 passing).
-Phase 3 — ✅ COMPLETE. Real EER on ASVspoof 2019 LA eval set: 0.9925% (71,237 utterances, 7,355 bonafide + 63,882 spoof). Paper reports 0.83% — within 0.16% variance using pretrained weights (no fine-tuning). EER threshold=3.0618. Publication plots saved to outputs/plots/.
+Phase 3 — ✅ COMPLETE. Real EER on ASVspoof 2019 LA eval set: 0.9925% (71,237 utterances, 7,355 bonafide + 63,882 spoof). Matches AASIST-L paper (0.99%) using pretrained weights (no fine-tuning). Note: 0.83% is the full-AASIST figure, not AASIST-L. EER threshold=3.0618. Publication plots saved to outputs/plots/.
 Phase 4 — ⏳ IN PROGRESS. eval.py updated to auto-detect both 2019 LA (space/no-header) and 2021 DF (tab/header) protocol formats. 2019 LA baseline confirmed. Awaiting 2021 DF download (34.5 GB, 4 parts from Zenodo record 4835108) + DF eval keys from asvspoof.org.
-Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef=-0.7694, intercept=0.8331). Auto-tuned thresholds: lower=0.25, upper=0.75. IN-DOMAIN result on 2019 LA eval (71,237 files): AUTHENTIC=11.4%, UNCERTAIN=3.8%, SPOOF=84.8%, Accuracy-excl-abstain=98.80%. Cross-domain comparison (2021 DF) pending Phase 4 data — expected UNCERTAIN to jump to ~40-60%.
+Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef=-0.7694, intercept=0.8331). Auto-tuned thresholds on the 2019 LA DEV scores (same set used for fitting): lower=0.25, upper=0.75 — both at the edge of the grid (lower_range=(0.25,0.45), upper_range=(0.55,0.75)), so the search widened the band as far as allowed. Re-tuning on eval scores would give 0.25/0.625. IN-DOMAIN result on 2019 LA eval (71,237 files): AUTHENTIC=11.4%, UNCERTAIN=3.8%, SPOOF=84.8%, Accuracy-excl-abstain=98.80%. Cross-domain comparison (2021 DF) pending Phase 4 data — expected UNCERTAIN to jump to ~40-60%.
 
 Env: no conda on this machine — using `.venv` (--system-site-packages,
 reuses system torch 2.6.0+cpu) + `pip install torchaudio==2.6.0` from the

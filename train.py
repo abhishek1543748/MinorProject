@@ -63,19 +63,17 @@ def compute_eer_fast(scores, labels) -> float:
     labels = torch.tensor(labels, dtype=torch.int32)
 
     thresholds = torch.linspace(scores.min().item(), scores.max().item(), steps=1000)
-    best_eer = 1.0
 
     spoof_scores   = scores[labels == 1]
     bonafide_scores = scores[labels == 0]
 
-    for t in thresholds:
-        far = (spoof_scores   >= t).float().mean().item()   # spoof accepted as bonafide
-        frr = (bonafide_scores < t).float().mean().item()   # bonafide rejected
-        eer = (abs(far - frr) < best_eer) and abs(far - frr) or best_eer
-        if abs(far - frr) < abs(best_eer - 0):
-            best_eer = (far + frr) / 2
+    # far/frr at every threshold: [T]
+    far = (spoof_scores[None, :]    >= thresholds[:, None]).float().mean(dim=1)  # spoof accepted as bonafide
+    frr = (bonafide_scores[None, :] <  thresholds[:, None]).float().mean(dim=1)  # bonafide rejected
 
-    return best_eer
+    # EER = operating point where far and frr cross
+    i = torch.argmin((far - frr).abs())
+    return ((far[i] + frr[i]) / 2).item()
 
 
 # ── Evaluation pass (dev set) ─────────────────────────────────────────────────
@@ -222,7 +220,12 @@ def main():
             optimizer.zero_grad(set_to_none=True)
 
             _, logits = model(waveforms)       # (last_hidden, [B, 2])
-            loss = criterion(logits, labels)
+            # Dataset labels are 0=bonafide/1=spoof (eval.py convention), but
+            # AASIST's output index 1 = bonafide. Flip to class indices so a
+            # trained checkpoint matches the pretrained weights and the
+            # score = logits[:,1] - logits[:,0] used everywhere downstream.
+            targets = 1 - labels
+            loss = criterion(logits, targets)
 
             loss.backward()
             # Gradient clipping prevents occasional large updates that destabilise LMCL

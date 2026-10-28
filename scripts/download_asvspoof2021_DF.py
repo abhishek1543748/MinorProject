@@ -20,7 +20,7 @@ After download + key placement, run Phase 4 eval with:
         --run-name asvspoof21_DF_eval \\
         --weights outputs/weights/AASIST-L.pth
 
-Expected EER: ~15–20%  (vs 2019 LA baseline ~0.83%)
+Expected EER: ~15–20%  (vs 2019 LA AASIST-L baseline ~0.99%)
 The degradation IS the Phase 4 finding.
 """
 
@@ -186,7 +186,7 @@ def main():
     print("     --run-name asvspoof21_DF_eval \\")
     print("     --weights outputs/weights/AASIST-L.pth")
     print()
-    print("Expected EER: ~15–20%  (vs 2019 LA baseline ~0.83%)")
+    print("Expected EER: ~15–20%  (vs 2019 LA AASIST-L baseline ~0.99%)")
     print("The degradation is due to unseen Opus/MP3 codec artifacts.")
     print("This IS the finding — motivates Phase 5 calibration.")
     print("=" * 65)
