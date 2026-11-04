@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice Spoof Check</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e2e2dc; --grid: #ececE6;
+    --authentic: #1f7a4d; --uncertain: #a86a00; --spoof: #b3261e; --accent: #2c5cc5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --card: #20201e; --text: #ececea; --muted: #a2a29c; --line: #34342f; --grid: #2b2b27;
+            --authentic: #4cc38a; --uncertain: #e0a63a; --spoof: #ef6b5f; --accent: #7aa2ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 15px; margin: 0 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .drop { display: block; border: 2px dashed var(--line); border-radius: 10px; padding: 28px; text-align: center; cursor: pointer; }
+  .drop.over { border-color: var(--accent); }
+  .drop input { display: none; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px 18px;
+           font: inherit; cursor: pointer; margin-top: 14px; }
+  button:disabled { opacity: .5; cursor: default; }
+  audio { width: 100%; margin-top: 12px; }
+  .band { font-size: 28px; font-weight: 700; letter-spacing: .02em; }
+  .band.authentic { color: var(--authentic); } .band.uncertain { color: var(--uncertain); } .band.spoof { color: var(--spoof); }
+  .meter { position: relative; height: 12px; border-radius: 6px; margin: 18px 0 6px;
+           background: linear-gradient(90deg, var(--authentic) 0 var(--lo), var(--uncertain) var(--lo) var(--hi), var(--spoof) var(--hi) 100%); opacity: .85; }
+  .needle { position: absolute; top: -5px; width: 3px; height: 22px; background: var(--text); border-radius: 2px; transform: translateX(-50%); }
+  .scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 16px 0 0; font-size: 14px; }
+  dt { color: var(--muted); } dd { margin: 0; font-variant-numeric: tabular-nums; }
+  canvas { width: 100%; display: block; }
+  .chart-wave { height: 140px; } .chart-spec { height: 180px; } .chart-win { height: 180px; }
+  img { width: 100%; border-radius: 8px; background: #fff; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .warn { color: var(--uncertain); font-size: 14px; margin-top: 8px; }
+  .err { color: var(--spoof); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Voice spoof check</h1>
+  <p class="sub">AASIST-L with a calibrated three-band verdict over the whole clip. Runs locally; audio never leaves this machine.</p>
+
+  <section class="card">
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept="audio/*">
+      <div id="dropText">Drop an audio file here or click to choose</div>
+    </label>
+    <audio id="player" controls hidden></audio>
+    <button id="go" disabled>Analyze</button>
+    <p id="status" class="note"></p>
+  </section>
+
+  <section class="card" id="result" hidden>
+    <div class="band" id="band"></div>
+    <div id="bandNote" class="note"></div>
+    <div id="mixedNote" class="warn" hidden></div>
+    <div class="meter" id="meter"><div class="needle" id="needle"></div></div>
+    <div class="scale"><span>0 · real</span><span>P(spoof)</span><span>1 · fake</span></div>
+    <dl>
+      <dt>P(spoof)</dt><dd id="prob"></dd>
+      <dt>Mean raw score</dt><dd id="raw"></dd>
+      <dt>Windows</dt><dd id="nwin"></dd>
+      <dt>Analysed</dt><dd id="analysed"></dd>
+      <dt>Model</dt><dd id="model"></dd>
+      <dt>Calibrator</dt><dd id="calName"></dd>
+    </dl>
+  </section>
+
+  <section class="card" id="winCard" hidden>
+    <h2>Score over time</h2>
+    <canvas id="winChart" class="chart-win"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--authentic)"></i>authentic</span>
+      <span><i style="background:var(--uncertain)"></i>uncertain</span>
+      <span><i style="background:var(--spoof)"></i>spoof</span>
+      <span><i style="border:2px solid var(--muted)"></i>silent (ignored)</span>
+    </div>
+    <p class="note">One point per 4.04 s window (50% overlap), at the window centre. Shaded bands are the calibrated thresholds.</p>
+  </section>
+
+  <section class="card" id="sigCard" hidden>
+    <h2>Amplitude (waveform)</h2>
+    <canvas id="waveChart" class="chart-wave"></canvas>
+    <h2 style="margin-top:18px">Frequency spectrum (average)</h2>
+    <canvas id="specChart" class="chart-spec"></canvas>
+    <p class="note" id="sigNote"></p>
+  </section>
+
+  <section class="card" id="heatCard" hidden>
+    <h2>Where the model found spoof evidence</h2>
+    <img id="heat" alt="Grad-CAM heatmap over the spectrogram">
+    <p class="note">Grad-CAM on the encoder, stitched across all windows. Shaded regions pushed the score toward spoof.</p>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NOTES = {
+  authentic: "Confident: genuine speech.",
+  uncertain: "The model is not confident either way. Treat as unverified.",
+  spoof: "Confident: synthetic or converted speech.",
+};
+let chosen = null, lastResult = null, decoded = null;
+
+// ── File selection ─────────────────────────────────────────────────────────
+function pick(f) {
+  if (!f) return;
+  chosen = f;
+  $("dropText").textContent = f.name;
+  $("player").src = URL.createObjectURL(f);
+  $("player").hidden = false;
+  $("go").disabled = false;
+  $("result").hidden = $("heatCard").hidden = $("winCard").hidden = true;
+  $("status").className = "note";
+  $("status").textContent = "";
+  lastResult = null;
+  drawSignal(f);
+}
+$("file").addEventListener("change", e => pick(e.target.files[0]));
+const drop = $("drop");
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", e => { e.preventDefault(); drop.classList.remove("over"); pick(e.dataTransfer.files[0]); });
+
+// ── Analyze ────────────────────────────────────────────────────────────────
+$("go").addEventListener("click", async () => {
+  $("go").disabled = true;
+  $("status").className = "note";
+  $("status").textContent = "Analyzing whole clip…";
+  try {
+    const fd = new FormData();
+    fd.append("file", chosen);
+    const r = await fetch("/analyze", { method: "POST", body: fd });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.statusText);
+    show(await r.json());
+    $("status").textContent = "";
+  } catch (e) {
+    $("status").className = "note err";
+    $("status").textContent = "Failed: " + e.message;
+  } finally {
+    $("go").disabled = false;
+  }
+});
+
+function show(d) {
+  lastResult = d;
+  $("band").textContent = d.band.toUpperCase();
+  $("band").className = "band " + d.band;
+  $("bandNote").textContent = NOTES[d.band] + (d.confidence === "uncalibrated" ? " (uncalibrated)" : "");
+  $("mixedNote").hidden = d.agreement !== "mixed";
+  $("mixedNote").textContent = "Windows disagree: parts of the clip look genuine and parts look synthetic, so the verdict is held at UNCERTAIN. This often means audio unlike the training data, or an edited clip.";
+  const [lo, hi] = d.thresholds || [0.5, 0.5];
+  $("meter").style.setProperty("--lo", lo * 100 + "%");
+  $("meter").style.setProperty("--hi", hi * 100 + "%");
+  $("needle").style.left = d.prob_spoof * 100 + "%";
+  $("prob").textContent = d.prob_spoof.toFixed(4);
+  $("raw").textContent = d.raw_score.toFixed(3) + "  (bonafide LLR, mean over speech windows)";
+  const silent = d.windows.filter(w => w.silent).length;
+  $("nwin").textContent = d.windows.length + (silent ? `  (${silent} silent, ignored)` : "");
+  $("analysed").textContent = `${d.analysed_s.toFixed(1)} s of ${d.duration_s.toFixed(1)} s` + (d.truncated ? "  (clip truncated)" : "");
+  $("model").textContent = d.model_version;
+  $("calName").textContent = d.calibrator || "none";
+  $("result").hidden = false;
+  $("winCard").hidden = false;
+  drawWindows();
+  if (d.heatmap_png) {
+    $("heat").src = "data:image/png;base64," + d.heatmap_png;
+    $("heatCard").hidden = false;
+  }
+}
+
+// ── Canvas helpers ─────────────────────────────────────────────────────────
+function setup(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  ctx.font = "11px system-ui, sans-serif";
+  return { ctx, w, h };
+}
+const PAD = { l: 40, r: 10, t: 8, b: 22 };
+
+function axes(ctx, w, h, xMax, xUnit, yTicks) {
+  const pw = w - PAD.l - PAD.r, ph = h - PAD.t - PAD.b;
+  ctx.strokeStyle = css("--grid"); ctx.fillStyle = css("--muted"); ctx.lineWidth = 1;
+  for (const [v, label] of yTicks) {
+    const y = PAD.t + ph * (1 - v);
+    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(w - PAD.r, y); ctx.stroke();
+    ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillText(label, PAD.l - 6, y);
+  }
+  const step = niceStep(xMax / 8);
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  for (let x = 0; x <= xMax + 1e-9; x += step) {
+    ctx.fillText(+x.toFixed(2) + (x === 0 ? " " + xUnit : ""), PAD.l + pw * x / xMax, h - PAD.b + 5);
+  }
+  return { pw, ph };
+}
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+  return p * (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10);
+}
+
+// ── Waveform + spectrum (client-side, from the file itself) ────────────────
+async function drawSignal(f) {
+  $("sigCard").hidden = false;
+  $("sigNote").textContent = "Decoding…";
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    decoded = await ac.decodeAudioData(await f.arrayBuffer());
+    ac.close();
+  } catch (e) {
+    decoded = null;
+    $("sigNote").textContent = "This browser could not decode the file for plotting (analysis still works).";
+    return;
+  }
+  drawWave(); drawSpectrum();
+  const nyq = decoded.sampleRate / 2000;
+  $("sigNote").textContent =
+    `${decoded.numberOfChannels} ch · ${decoded.sampleRate} Hz · ${decoded.duration.toFixed(2)} s. ` +
+    (nyq > 8 ? "The model resamples to 16 kHz, so it only sees content below 8 kHz (dashed line)." : "");
+}
+
+function mono() {
+  const n = decoded.length, out = new Float32Array(n);
+  for (let c = 0; c < decoded.numberOfChannels; c++) {
+    const d = decoded.getChannelData(c);
+    for (let i = 0; i < n; i++) out[i] += d[i] / decoded.numberOfChannels;
+  }
+  return out;
+}
+
+function drawWave() {
+  const { ctx, w, h } = setup($("waveChart"));
+  const x = mono(), dur = decoded.duration;
+  const { pw, ph } = axes(ctx, w, h, dur, "s", [[1, "1"], [0.5, "0"], [0, "-1"]]);
+  const peak = x.reduce((m, v) => Math.max(m, Math.abs(v)), 0) || 1;
+  ctx.fillStyle = css("--accent");
+  const per = x.length / pw;
+  for (let px = 0; px < pw; px++) {
+    let lo = 1, hi = -1;
+    const a = Math.floor(px * per), b = Math.min(x.length, Math.floor((px + 1) * per) + 1);
+    for (let i = a; i < b; i++) { const v = x[i] / peak; if (v < lo) lo = v; if (v > hi) hi = v; }
+    const y1 = PAD.t + ph * (1 - (hi + 1) / 2), y2 = PAD.t + ph * (1 - (lo + 1) / 2);
+    ctx.fillRect(PAD.l + px, y1, 1, Math.max(1, y2 - y1));
+  }
+}
+
+function fft(re, im) {   // in-place radix-2
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let k = 0; k < len / 2; k++) {
+        const a = i + k, b = a + len / 2;
+        const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr;
+        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
+        const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr;
+      }
+    }
+  }
+}
+
+function drawSpectrum() {
+  const N = 2048, x = mono(), sr = decoded.sampleRate;
+  const win = Float32Array.from({ length: N }, (_, i) => 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1)));
+  const frames = Math.max(1, Math.floor((x.length - N) / (N / 2)) + 1);
+  const stride = Math.max(1, Math.floor(frames / 300));           // cap work at ~300 frames
+  const pow = new Float64Array(N / 2); let used = 0;
+  for (let f = 0; f < frames; f += stride) {
+    const re = new Float32Array(N), im = new Float32Array(N), off = f * N / 2;
+    for (let i = 0; i < N; i++) re[i] = (x[off + i] || 0) * win[i];
+    fft(re, im);
+    for (let k = 0; k < N / 2; k++) pow[k] += re[k] * re[k] + im[k] * im[k];
+    used++;
+  }
+  const db = Array.from(pow, p => 10 * Math.log10(p / used + 1e-12));
+  const top = Math.max(...db), floor = top - 90;
+
+  const { ctx, w, h } = setup($("specChart"));
+  const kHz = sr / 2000;
+  const ticks = [[1, "0 dB"], [2/3, "-30"], [1/3, "-60"], [0, "-90"]];
+  const { pw, ph } = axes(ctx, w, h, kHz, "kHz", ticks);
+  ctx.strokeStyle = css("--accent"); ctx.lineWidth = 1.5; ctx.beginPath();
+  db.forEach((v, k) => {
+    const px = PAD.l + pw * k / (N / 2), py = PAD.t + ph * (1 - Math.max(0, v - floor) / 90);
+    k ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+  });
+  ctx.stroke();
+  if (kHz > 8) {
+    const px = PAD.l + pw * 8 / kHz;
+    ctx.strokeStyle = css("--muted"); ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(px, PAD.t); ctx.lineTo(px, PAD.t + ph); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+// ── Per-window score chart ─────────────────────────────────────────────────
+function drawWindows() {
+  const d = lastResult; if (!d) return;
+  const { ctx, w, h } = setup($("winChart"));
+  const [lo, hi] = d.thresholds || [0.5, 0.5];
+  const xMax = d.analysed_s;
+  const ticks = [[1, "1.0"], [hi, hi.toFixed(2)], [lo, lo.toFixed(2)], [0, "0.0"]];
+  const pw = w - PAD.l - PAD.r, ph = h - PAD.t - PAD.b;
+  const Y = p => PAD.t + ph * (1 - p), X = t => PAD.l + pw * t / xMax;
+  ctx.globalAlpha = 0.10;
+  for (const [a, b, c] of [[0, lo, "--authentic"], [lo, hi, "--uncertain"], [hi, 1, "--spoof"]]) {
+    ctx.fillStyle = css(c); ctx.fillRect(PAD.l, Y(b), pw, Y(a) - Y(b));
+  }
+  ctx.globalAlpha = 1;
+  axes(ctx, w, h, xMax, "s", ticks);
+  const pts = d.windows.map(win => ({ x: X((win.start_s + win.end_s) / 2), y: Y(win.prob_spoof), win }));
+  ctx.strokeStyle = css("--muted"); ctx.lineWidth = 1; ctx.beginPath();
+  pts.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+  ctx.stroke();
+  for (const p of pts) {
+    ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+    if (p.win.silent) { ctx.strokeStyle = css("--muted"); ctx.lineWidth = 2; ctx.stroke(); }
+    else { ctx.fillStyle = css("--" + p.win.band); ctx.fill(); }
+  }
+}
+
+window.addEventListener("resize", () => {
+  if (decoded) { drawWave(); drawSpectrum(); }
+  drawWindows();
+});
+</script>
+</body>
+</html>

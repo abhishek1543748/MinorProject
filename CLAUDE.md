@@ -226,6 +226,19 @@ Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef
   - Codec is NOT the driver: nocodec EER 13.9% vs 14.3–16.8% for the codecs. Source corpus is: asvspoof 8.4%, vcc2018 17.4%, vcc2020 23.8%. Shift is speaker/corpus, not compression.
   - Accuracy 99% needs 5.2% abstain in-domain vs 81.6% cross-domain.
   Framing: a fixed in-domain abstain band does not absorb domain shift; the model is confidently wrong on unseen real speakers.
+Phase 6 — 🟡 MOSTLY DONE. src/explainability/gradcam.py: Grad-CAM on model.encoder output (spectral node × time), target = spoof LLR (logits[0]-logits[1]); render_png() gives spectrogram + time profile + 2D map. src/api/server.py: POST /analyze returns band, prob_spoof, confidence, raw_score, thresholds, heatmap_png (base64; ?explain=false skips it). The bare binary "label" field was removed (band is the verdict). src/ui/index.html: upload, audio player, band card with threshold meter, heatmap. Run (from deepfake_detector/): .venv\Scripts\python.exe -m uvicorn src.api.server:app --port 8000 → http://localhost:8000/ (bare `uvicorn` is not on PATH). tests/test_phase6.py 4/4.
+  Fixed: calibrator.pkl was pickled as __main__.Calibrator (saved via the CLI), so the server could never load it under uvicorn and silently returned uncalibrated bands. Calibrator.load now remaps __main__ names.
+  Left: ONNX export (optional, only if CPU latency matters — measured on this CPU: ~0.5 s per window without Grad-CAM, ~1.7 s with it).
+  Whole-clip scoring: preprocess.preprocess_windows() (in the GOLDEN RULE module; window 0 == preprocess() exactly, tested) splits the clip into 4.04 s windows, 50% overlap, last window end-aligned, max 40 windows (~80 s). speech_fraction() = energy VAD; windows with <20% speech are ignored. Server verdict = calibrated mean bonafide LLR over speech windows; if windows are confidently AUTHENTIC and SPOOF at once → forced UNCERTAIN ("agreement": "mixed"). Grad-CAM stitched across windows (GradCAM.clip). UI adds waveform, average spectrum (8 kHz model-cutoff marker) and per-window score chart.
+  Caveat: calibrators were fitted on single-window scores, not window means (29% of LA dev files are >4.04 s). Re-fit needs dev rescored with windows (~4-5 h CPU).
+Phase 5b — ✅ Domain-aware calibration (scripts/domain_calibration.py → outputs/scores/phase5_domain_calibration.txt). DF sample split by SPEAKER (46/47 spk, no overlap) into DF-cal / DF-test. calibrate.py gained tune_selective(): least abstain s.t. accuracy-outside-abstain ≥ target (interior optimum, fixes grid-edge issue) + multi-CSV fit.
+  On DF-test (unseen speakers):          abstain  errors-caught  confident-wrong   LA-eval abstain
+    A LA-dev Platt, 0.25/0.75             5.5%      21%            9.9%              3.8%
+    B LA-dev Platt, selective 99%         0.2%       1%           12.5%              0.1%
+    C LA-dev+DF-cal Platt, selective 98% 12.6%      46%            6.9%              8.2%
+    C LA-dev+DF-cal Platt, selective 99% 28.9%      76%            3.0%             24.1%
+  Finding: in-domain calibration alone can NEVER learn to abstain (LA dev is near-separable → B collapses the band). A small speaker-disjoint slice of out-of-domain data lets the band absorb most shift errors. vcc2018 bonafide stays bad (41% confidently called spoof under C@99%) — model-level, not calibration.
+  Deployment: server uses outputs/weights/calibrator_mixed.pkl (C @ 98%, band 0.17/0.725). calibrator.pkl (A) kept as the paper's in-domain baseline. Override: env DFD_CALIBRATOR=outputs/weights/calibrator.pkl.
 
 Env: no conda on this machine — using `.venv` (--system-site-packages,
 reuses system torch 2.6.0+cpu) + `pip install torchaudio==2.6.0` from the

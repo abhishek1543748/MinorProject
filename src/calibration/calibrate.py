@@ -128,16 +128,19 @@ class Calibrator:
         self._fit_n = 0
 
     # ── Fitting ───────────────────────────────────────────────────────────────
-    def fit(self, scores_csv: str) -> "Calibrator":
+    def fit(self, scores_csv: str | list[str]) -> "Calibrator":
         """
-        Fit Platt scaler from a scores CSV produced by eval.py.
+        Fit Platt scaler from one or more scores CSVs produced by eval.py.
         CSV columns: filename, label, score, prob_spoof
         """
-        from sklearn.linear_model import LogisticRegression
-
-        scores, labels = _load_scores_csv(scores_csv)
+        scores, labels = _load_many(scores_csv)
         if len(scores) == 0:
             raise ValueError(f"No scores loaded from {scores_csv}")
+        return self.fit_arrays(scores, labels)
+
+    def fit_arrays(self, scores, labels) -> "Calibrator":
+        """Fit Platt scaler from in-memory (bonafide LLR, label) pairs."""
+        from sklearn.linear_model import LogisticRegression
 
         X = np.array(scores).reshape(-1, 1)
         y = np.array(labels)
@@ -190,6 +193,48 @@ class Calibrator:
         print(f"[calibrate] Tuned thresholds -> lower={self.lower}  upper={self.upper}")
         print(f"            Accuracy outside abstain: {best['acc']:.2f}%  "
               f"Abstain rate: {best['abstain_pct']:.1f}%")
+        return self.lower, self.upper
+
+    def tune_selective(self, scores, labels, target_acc: float = 0.99,
+                       step: float = 0.005) -> tuple[float, float]:
+        """
+        Selective-classification threshold search (replaces the grid-edge
+        objective of tune_thresholds): pick the band that ABSTAINS LEAST
+        while accuracy on the non-abstained inputs stays >= target_acc.
+        Searches lower in (0, 0.5], upper in [0.5, 1) on a fine grid, so the
+        result is an interior optimum, not the edge of a hand-set range.
+        If no band reaches the target, picks the one with the best accuracy.
+        """
+        probs = self._probs(list(scores))
+        y = np.asarray(labels)
+        p_bon, p_spo = np.sort(probs[y == 0]), np.sort(probs[y == 1])
+        n = len(y)
+
+        grid_lo = np.arange(step, 0.5 + 1e-9, step)
+        grid_hi = np.arange(0.5, 1 - step + 1e-9, step)
+        # counts below lo (called authentic) / above hi (called spoof)
+        bon_lo = np.searchsorted(p_bon, grid_lo, side="left")
+        spo_lo = np.searchsorted(p_spo, grid_lo, side="left")
+        bon_hi = len(p_bon) - np.searchsorted(p_bon, grid_hi, side="right")
+        spo_hi = len(p_spo) - np.searchsorted(p_spo, grid_hi, side="right")
+
+        correct = bon_lo[:, None] + spo_hi[None, :]
+        covered = correct + spo_lo[:, None] + bon_hi[None, :]
+        acc = np.where(covered > 0, correct / np.maximum(covered, 1), 0.0)
+        cov = covered / n
+
+        ok = acc >= target_acc
+        if ok.any():
+            i, j = np.unravel_index(np.argmax(np.where(ok, cov, -1)), cov.shape)
+        else:
+            i, j = np.unravel_index(np.argmax(acc), acc.shape)
+
+        self.lower = round(float(grid_lo[i]), 4)
+        self.upper = round(float(grid_hi[j]), 4)
+        print(f"[calibrate] Selective thresholds (target acc {target_acc:.3f}) -> "
+              f"lower={self.lower}  upper={self.upper}  "
+              f"acc={acc[i, j]*100:.2f}%  abstain={(1-cov[i, j])*100:.1f}%"
+              + ("" if ok.any() else "  [target NOT reached]"))
         return self.lower, self.upper
 
     # ── Inference ─────────────────────────────────────────────────────────────
@@ -249,12 +294,12 @@ class Calibrator:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         with open(path, "wb") as f:
             pickle.dump(self, f)
-        print(f"[calibrate] Calibrator saved → {path}")
+        print(f"[calibrate] Calibrator saved -> {path}")
 
     @classmethod
     def load(cls, path: str) -> "Calibrator":
         with open(path, "rb") as f:
-            obj = pickle.load(f)
+            obj = _CalibratorUnpickler(f).load()
         if not isinstance(obj, cls):
             raise TypeError(f"Loaded object is {type(obj)}, expected Calibrator")
         print(f"[calibrate] Calibrator loaded from {path}  "
@@ -275,6 +320,28 @@ class Calibrator:
 # ─────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ─────────────────────────────────────────────────────────────────────────────
+
+class _CalibratorUnpickler(pickle.Unpickler):
+    """
+    A .pkl saved by the CLI (`python src/calibration/calibrate.py fit ...`)
+    records the class as __main__.Calibrator. Loading it from anywhere else
+    (uvicorn, pytest) fails because __main__ is a different module there.
+    Resolve those names against this module instead.
+    """
+    def find_class(self, module, name):
+        if module == "__main__" and name in ("Calibrator", "Verdict", "BandReport"):
+            return globals()[name]
+        return super().find_class(module, name)
+
+
+def _load_many(paths) -> tuple[list[float], list[int]]:
+    scores, labels = [], []
+    for path in ([paths] if isinstance(paths, (str, Path)) else paths):
+        s, l = _load_scores_csv(path)
+        scores += s
+        labels += l
+    return scores, labels
+
 
 def _load_scores_csv(path: str) -> tuple[list[float], list[int]]:
     """Load scores + labels from an eval.py output CSV."""
@@ -326,8 +393,10 @@ def _compute_report(name: str,
 def _cmd_fit(args):
     cal = Calibrator()
     cal.fit(args.scores)
-    if args.tune:
-        cal.tune_thresholds(args.scores)
+    if args.target_acc is not None:
+        cal.tune_selective(*_load_many(args.scores), target_acc=args.target_acc)
+    elif args.tune:
+        cal.tune_thresholds(args.scores[0])
     cal.save(args.save)
 
 
@@ -339,7 +408,7 @@ def _cmd_report(args):
         out.parent.mkdir(parents=True, exist_ok=True)
         with open(out, "w", encoding="utf-8") as f:
             f.write(str(report) + "\n")
-        print(f"[calibrate] Report saved → {out}")
+        print(f"[calibrate] Report saved -> {out}")
 
 
 def _cmd_tune(args):
@@ -357,12 +426,14 @@ def main():
 
     # ── fit ──────────────────────────────────────────────────────────────────
     fit_p = sub.add_parser("fit", help="Fit calibrator on dev-set scores CSV")
-    fit_p.add_argument("--scores", required=True,
-                       help="Path to scores CSV from eval.py (dev set)")
+    fit_p.add_argument("--scores", required=True, nargs="+",
+                       help="Scores CSV(s) from eval.py (dev set; several = pooled)")
     fit_p.add_argument("--save", required=True,
                        help="Where to save calibrator .pkl")
     fit_p.add_argument("--tune", action="store_true",
-                       help="Grid-search thresholds after fitting")
+                       help="Legacy grid search (hits grid edge; see tune_selective)")
+    fit_p.add_argument("--target-acc", type=float, default=None,
+                       help="Selective tuning: least abstain with accuracy >= this (e.g. 0.99)")
 
     # ── report ───────────────────────────────────────────────────────────────
     rep_p = sub.add_parser("report", help="Report abstain-band distribution on a scored CSV")

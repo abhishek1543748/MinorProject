@@ -167,3 +167,76 @@ def preprocess(
         waveform = normalize(waveform)
 
     return waveform.float()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Sliding-window inference (whole-clip scoring)
+# ─────────────────────────────────────────────────────────────────────────────
+
+WINDOW_HOP = TARGET_LEN // 2     # 50% overlap (~2.02 s hop)
+MAX_WINDOWS = 40                 # ~80 s of audio; longer clips are truncated
+
+
+class Windows:
+    """
+    Output of preprocess_windows().
+      clip    : [1, T]  mono, 16 kHz, peak-normalised over the WHOLE clip
+      windows : [N, TARGET_LEN]  model-ready batch (AASIST takes [B, T])
+      starts  : list[int]  window start, in samples at TARGET_SR
+      truncated : bool  True if the clip was longer than MAX_WINDOWS covers
+    """
+    def __init__(self, clip, windows, starts, truncated):
+        self.clip, self.windows, self.starts, self.truncated = clip, windows, starts, truncated
+
+
+def preprocess_windows(path: str, hop: int = WINDOW_HOP,
+                       max_windows: int = MAX_WINDOWS) -> Windows:
+    """
+    Inference-only: split the whole clip into overlapping TARGET_LEN windows.
+
+    Same decode → mono → resample → normalize stages as preprocess(), so
+    windows[0] == preprocess(path, mode='infer')[0] exactly. Clips shorter
+    than TARGET_LEN give one repeat-padded window (also identical).
+    The last window is aligned to the end of the clip so no tail is skipped.
+    """
+    waveform, sr = load_audio(path)
+    clip = normalize(resample(to_mono(waveform), sr))    # [1, T]
+    T = clip.shape[1]
+
+    if T <= TARGET_LEN:
+        return Windows(clip, fix_length(clip), [0], False)
+
+    starts = list(range(0, T - TARGET_LEN + 1, hop))
+    if starts[-1] + TARGET_LEN < T:
+        starts.append(T - TARGET_LEN)                    # cover the tail
+
+    truncated = len(starts) > max_windows
+    starts = starts[:max_windows]
+    windows = torch.stack([clip[0, s:s + TARGET_LEN] for s in starts])
+    return Windows(clip.float(), windows.float(), starts, truncated)
+
+
+def speech_fraction(clip: torch.Tensor, starts: list[int],
+                    frame: int = 400, hop: int = 160,
+                    rel_db: float = -40.0, abs_db: float = -55.0) -> list[float]:
+    """
+    Energy VAD (inference reporting only — never changes model input).
+
+    A 25 ms frame counts as speech if its energy is within `rel_db` of the
+    loudest frame in the clip AND above `abs_db` (clip is peak-normalised,
+    so 0 dB = full scale). Returns, per window, the fraction of speech frames.
+    Relative threshold adapts to quiet recordings; absolute floor stops pure
+    noise/hiss being called speech.
+    """
+    x = clip[0]
+    if x.shape[0] < frame:
+        x = torch.nn.functional.pad(x, (0, frame - x.shape[0]))
+    frames = x.unfold(0, frame, hop)                                  # [F, frame]
+    db = 10 * torch.log10(frames.pow(2).mean(dim=1) + 1e-10)          # [F]
+    speech = (db > db.max() + rel_db) & (db > abs_db)
+
+    out = []
+    for s in starts:
+        a, b = s // hop, max(s // hop + 1, (s + TARGET_LEN - frame) // hop + 1)
+        out.append(speech[a:b].float().mean().item() if a < len(speech) else 0.0)
+    return out
