@@ -218,8 +218,14 @@ Phase 0 — ✅ COMPLETE. Inference pipeline verified on real ASVspoof2019 LA fi
 Phase 1 — ✅ COMPLETE. Preprocessing parity confirmed; all 10 tests pass.
 Phase 2 — ✅ COMPLETE. Training pipeline fully wired, dataset collator tested, and unit test suite verified (tests/test_phase2.py 4/4 passing).
 Phase 3 — ✅ COMPLETE. Real EER on ASVspoof 2019 LA eval set: 0.9925% (71,237 utterances, 7,355 bonafide + 63,882 spoof). Matches AASIST-L paper (0.99%) using pretrained weights (no fine-tuning). Note: 0.83% is the full-AASIST figure, not AASIST-L. EER threshold=3.0618. Publication plots saved to outputs/plots/.
-Phase 4 — ⏳ IN PROGRESS. eval.py updated to auto-detect both 2019 LA (space/no-header) and 2021 DF (tab/header) protocol formats. 2019 LA baseline confirmed. Awaiting 2021 DF download (34.5 GB, 4 parts from Zenodo record 4835108) + DF eval keys from asvspoof.org.
-Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef=-0.7694, intercept=0.8331). Auto-tuned thresholds on the 2019 LA DEV scores (same set used for fitting): lower=0.25, upper=0.75 — both at the edge of the grid (lower_range=(0.25,0.45), upper_range=(0.55,0.75)), so the search widened the band as far as allowed. Re-tuning on eval scores would give 0.25/0.625. IN-DOMAIN result on 2019 LA eval (71,237 files): AUTHENTIC=11.4%, UNCERTAIN=3.8%, SPOOF=84.8%, Accuracy-excl-abstain=98.80%. Cross-domain comparison (2021 DF) pending Phase 4 data — expected UNCERTAIN to jump to ~40-60%.
+Phase 4 — ✅ COMPLETE (20k sample). Frozen AASIST-L on a 20,000-file sample of 2021 DF eval (df_sample_20k.txt: 5,535 bonafide + 14,465 spoof): EER=15.74% (threshold -3.088). Full ~600k DF eval not run — the sample stands in; say so in the write-up.
+Phase 5 — ✅ COMPLETE. Platt calibrator fitted on 24,844 dev samples (LR coef=-0.7694, intercept=0.8331). Auto-tuned thresholds on the 2019 LA DEV scores (same set used for fitting): lower=0.25, upper=0.75 — both at the edge of the grid (lower_range=(0.25,0.45), upper_range=(0.55,0.75)), so the search widened the band as far as allowed. Re-tuning on eval scores would give 0.25/0.625. IN-DOMAIN result on 2019 LA eval (71,237 files): AUTHENTIC=11.4%, UNCERTAIN=3.8%, SPOOF=84.8%, Accuracy-excl-abstain=98.80%. CROSS-DOMAIN (2021 DF sample20k): AUTHENTIC=20.8%, UNCERTAIN=5.3%, SPOOF=73.8%, Accuracy-excl-abstain=89.78%. The expected UNCERTAIN jump to 40-60% did NOT happen.
+  Error analysis (scripts/analyze_abstain.py → outputs/scores/phase5_abstain_analysis.txt):
+  - Binary errors that land in abstain: 53% in-domain vs only 21% cross-domain. 79% of DF errors are confident-wrong.
+  - Failure is on REAL audio: 25.7% of DF bonafide confidently called SPOOF (in-domain 0.2%). Spoof detection holds (92.3% vs 94.6%).
+  - Codec is NOT the driver: nocodec EER 13.9% vs 14.3–16.8% for the codecs. Source corpus is: asvspoof 8.4%, vcc2018 17.4%, vcc2020 23.8%. Shift is speaker/corpus, not compression.
+  - Accuracy 99% needs 5.2% abstain in-domain vs 81.6% cross-domain.
+  Framing: a fixed in-domain abstain band does not absorb domain shift; the model is confidently wrong on unseen real speakers.
 
 Env: no conda on this machine — using `.venv` (--system-site-packages,
 reuses system torch 2.6.0+cpu) + `pip install torchaudio==2.6.0` from the
