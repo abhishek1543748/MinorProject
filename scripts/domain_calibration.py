@@ -39,13 +39,18 @@ DF_META = ROOT / "data/raw/ASVspoof2021_DF/df_sample_20k.txt"
 OUT     = ROOT / "outputs/scores/phase5_domain_calibration.txt"
 
 
+def is_cal_speaker(speaker: str) -> bool:
+    """DF-cal / DF-test split rule (crc32, not hash(): stable across runs).
+    Shared with refit_windowed_calibrator.py so DF-test stays held out."""
+    return zlib.crc32(speaker.encode()) % 2 == 0
+
+
 def split_df():
     df = pd.read_csv(DF_CSV)
     meta = pd.read_csv(DF_META, sep=r"\s+", header=None, usecols=[0, 1, 3],
                        names=["speaker", "filename", "source"])
     df = df.merge(meta, on="filename")
-    # deterministic speaker-level split (crc32, not hash(): stable across runs)
-    in_cal = df["speaker"].map(lambda s: zlib.crc32(s.encode()) % 2 == 0)
+    in_cal = df["speaker"].map(is_cal_speaker)
     return df[in_cal].reset_index(drop=True), df[~in_cal].reset_index(drop=True)
 
 

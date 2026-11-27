@@ -110,11 +110,18 @@ def _finish(cam: torch.Tensor, score: float) -> CAMResult:
     return CAMResult(cam=cam.numpy(), time_profile=prof.numpy(), spoof_score=score)
 
 
-def render_png(waveform: torch.Tensor, result: CAMResult) -> bytes:
+SPECTRAL_LABEL = "spectral node\n(low → high)"
+
+
+def render_png(waveform: torch.Tensor, result: CAMResult,
+               feature_label: str = SPECTRAL_LABEL) -> bytes:
     """
     Two panels, shared time axis (seconds):
       top    — input spectrogram with spoof-evidence time profile overlaid
-      bottom — 2D Grad-CAM (spectral node × time)
+      bottom — 2D Grad-CAM (encoder node × time). For AASIST-L the nodes are
+               pooled SincNet bands (ordered low → high freq); for SSL-AASIST
+               they are learned wav2vec2 feature channels with no frequency
+               order, so pass feature_label accordingly.
     """
     import matplotlib
     matplotlib.use("Agg")
@@ -143,7 +150,7 @@ def render_png(waveform: torch.Tensor, result: CAMResult) -> bytes:
 
     ax2.imshow(result.cam, origin="lower", aspect="auto", cmap="inferno",
                extent=[0, dur, 0, result.cam.shape[0]], vmin=0, vmax=1)
-    ax2.set_ylabel("spectral node\n(low → high)")
+    ax2.set_ylabel(feature_label)
     ax2.set_xlabel("time (s)")
 
     fig.tight_layout()

@@ -38,6 +38,9 @@ def get_args():
         help="Path to model checkpoint (.pth)",
     )
     p.add_argument("--config", default="configs/aasist_L.json", help="Path to model config JSON")
+    p.add_argument("--model", choices=["aasist", "ssl"], default="aasist",
+                   help="aasist = AASIST/AASIST-L (--weights/--config); "
+                        "ssl = wav2vec2 XLS-R + AASIST (src/model/ssl_aasist.py)")
     p.add_argument("--run-name", default="eval_run", help="Prefix for output score CSV and summary")
     p.add_argument("--batch-size", type=int, default=32, help="Inference batch size")
     p.add_argument("--limit", type=int, default=None, help="Optional maximum number of files to score (for fast test)")
@@ -166,6 +169,8 @@ def main():
     device_str = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
     device = torch.device(device_str)
 
+    if args.model == "ssl" and args.weights == str(DEFAULT_WEIGHTS if DEFAULT_WEIGHTS.exists() else FALLBACK_WEIGHTS):
+        args.weights = str(ROOT / "outputs/weights/SSL_AASIST_DF.pth")
     weights_path = Path(args.weights)
     config_path = Path(args.config)
 
@@ -174,7 +179,11 @@ def main():
         sys.exit(1)
 
     print(f"[eval] Loading model from {weights_path} onto {device}...")
-    model = load_model(weights_path, config_path, device)
+    if args.model == "ssl":
+        from src.model.ssl_aasist import load_ssl_aasist
+        model = load_ssl_aasist(weights_path, device)
+    else:
+        model = load_model(weights_path, config_path, device)
 
     items = read_protocol(args.protocol, limit=args.limit)
     audio_dir = Path(args.audio_dir)

@@ -58,3 +58,9 @@ secrets.json
 *.bak
 tmp/
 temp/
+
+# Large SSL-AASIST weights (~1.2 GB) — download with scripts/download_ssl_aasist.py
+outputs/weights/SSL_AASIST_*.pth
+
+# Data bundle for Colab (scripts/pack_for_colab.py) — upload to Drive, never commit
+colab_data.zip

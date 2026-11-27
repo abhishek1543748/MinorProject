@@ -240,6 +240,16 @@ Phase 5b — ✅ Domain-aware calibration (scripts/domain_calibration.py → out
   Finding: in-domain calibration alone can NEVER learn to abstain (LA dev is near-separable → B collapses the band). A small speaker-disjoint slice of out-of-domain data lets the band absorb most shift errors. vcc2018 bonafide stays bad (41% confidently called spoof under C@99%) — model-level, not calibration.
   Deployment: server uses outputs/weights/calibrator_mixed.pkl (C @ 98%, band 0.17/0.725). calibrator.pkl (A) kept as the paper's in-domain baseline. Override: env DFD_CALIBRATOR=outputs/weights/calibrator.pkl.
 
+8 GB CPU demo + fine-tune prep (2026-11-26):
+  - SSL INT8: DFD_MODEL=ssl DFD_QUANTIZE=1. quantize_ssl() = dynamic INT8 on wav2vec2 Linears only,
+    back-end fp32 (Grad-CAM still works), front-end frozen. Measured: ~1.7 GB private RAM (fp32 ~3.1),
+    ~0.9 s/window (fp32 ~1.4), sample LLRs move <0.35, sign+order kept. Server uses FastAPI lifespan.
+  - src/api/clip_scoring.py = the ONE window-mean + VAD scoring path (server + calibration refit).
+  - scripts/refit_windowed_calibrator.py: refit Platt on clip scores (resumable CSV, --max_files).
+    NOT yet run in full — calibrator_mixed.pkl is still single-window. No calibrator_ssl*.pkl exists yet.
+  - scripts/fetch_bonafide_diversity.py + train.py --resume_weights / --extra-train-protocol /
+    configs/finetune_config.json (CE, lr 1e-5, 6 ep) — for a Kaggle T4 fine-tune. Not run yet.
+
 Env: no conda on this machine — using `.venv` (--system-site-packages,
 reuses system torch 2.6.0+cpu) + `pip install torchaudio==2.6.0` from the
 CPU wheel index. torch-geometric skipped — AASIST.py has zero dependency

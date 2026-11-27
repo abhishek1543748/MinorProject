@@ -20,6 +20,9 @@ from src.model.AASIST import Model
 def test_lmcl_loss_forward_backward():
     """Verify LMCLLoss produces finite loss and valid gradient flow."""
     criterion = LMCLLoss(num_classes=2, s=30.0, m=0.4)
+    # Seeded: with s=30, some unseeded draws make CE underflow to exactly 0.0
+    # in float32 and the "loss > 0" check failed depending on test order.
+    torch.manual_seed(0)
     logits = torch.randn(4, 2, requires_grad=True)
     labels = torch.tensor([0, 1, 0, 1], dtype=torch.long)
 
@@ -84,3 +87,60 @@ def test_model_training_step():
     loss.backward()
     torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
     optimizer.step()
+
+
+# ── Fine-tuning (train.py --resume_weights + mixed bonafide protocols) ──────
+
+def test_finetune_resume_weights_smoke(tmp_path):
+    """2 tiny epochs from AASIST-L.pth with an extra bonafide protocol mixed in."""
+    import json
+    from pathlib import Path
+    import pytest
+    import torchaudio
+    import train
+
+    root = Path(__file__).resolve().parent.parent
+    weights = root / "outputs/weights/AASIST-L.pth"
+    if not weights.exists():
+        pytest.skip("AASIST-L.pth missing")
+
+    torch.manual_seed(0)
+    def corpus(name, labels):
+        d = tmp_path / name
+        d.mkdir()
+        lines = []
+        for i, lab in enumerate(labels):
+            torchaudio.save(str(d / f"{name}_{i}.wav"), 0.1 * torch.randn(1, 16000 * 2), 16000)
+            lines.append(f"S{i} {name}_{i} - - {lab}")
+        (d / "p.txt").write_text("\n".join(lines) + "\n")
+        return d / "p.txt", d
+
+    tr_p, tr_d = corpus("tr", ["bonafide", "spoof"] * 2)
+    dv_p, dv_d = corpus("dv", ["bonafide", "spoof"])
+    ex_p, ex_d = corpus("ex", ["bonafide"] * 2)
+    cfg = json.loads((root / "configs/finetune_config.json").read_text())
+    cfg["data"].update(train_protocol=str(tr_p), train_audio_dir=str(tr_d),
+                       dev_protocol=str(dv_p), dev_audio_dir=str(dv_d))
+    cfg["model_config"] = str(root / "configs/aasist_L.json")
+    cfg["paths"] = {"weights_dir": str(tmp_path / "w"), "scores_dir": str(tmp_path / "s")}
+    (tmp_path / "cfg.json").write_text(json.dumps(cfg))
+
+    train.main(["--config", str(tmp_path / "cfg.json"), "--epochs", "2", "--batch-size", "2",
+                "--resume_weights", str(weights),
+                "--extra-train-protocol", str(ex_p), "--extra-train-audio-dir", str(ex_d),
+                "--extra-dev-protocol", str(ex_p), "--extra-dev-audio-dir", str(ex_d),
+                "--save-name", "ft.pth"])
+    log = (tmp_path / "s" / "ft_log.csv").read_text().splitlines()
+    assert len(log) == 3                                    # header + 2 epochs
+    assert float(log[1].split(",")[3]) == pytest.approx(1e-5)   # fine-tune default lr
+
+
+def test_train_args_validation():
+    import pytest
+    import train
+    with pytest.raises(SystemExit):
+        train.get_args(["--resume", "a.pth", "--resume_weights", "b.pth"])
+    with pytest.raises(SystemExit):
+        train.get_args(["--extra-train-protocol", "p.txt"])    # missing audio dir
+    a = train.get_args(["--resume_weights", "x.pth"])
+    assert a.lr is None and a.save_name == "best_model.pth"

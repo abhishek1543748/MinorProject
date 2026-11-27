@@ -7,6 +7,19 @@ Usage:
     python train.py --config configs/train_config.json --loss CE   # ablation
     python train.py --config configs/train_config.json --epochs 5  # quick smoke-test
 
+Fine-tune pretrained AASIST-L with extra real-world bonafide (Kaggle/Colab T4):
+    python scripts/fetch_bonafide_diversity.py --n 2500
+    python train.py --config configs/finetune_config.json
+        --resume_weights outputs/weights/AASIST-L.pth
+        --extra-train-protocol data/raw/bonafide_diversity/protocol_train.txt
+        --extra-train-audio-dir data/raw/bonafide_diversity/flac
+        --extra-dev-protocol data/raw/bonafide_diversity/protocol_dev.txt
+        --extra-dev-audio-dir data/raw/bonafide_diversity/flac
+        --workers 2 --save-name finetuned_aasist_l.pth
+  (one command; shown on several lines)
+  --resume_weights loads WEIGHTS ONLY (fresh optimizer, epoch 0, lr 1e-5 unless
+  --lr is given). --resume (full checkpoint, continues the same run) is unchanged.
+
 GOLDEN RULE: preprocessing is performed by src.preprocessing.preprocess —
              the exact same module used in infer.py and eval.py.
 
@@ -29,7 +42,7 @@ ROOT = Path(__file__).parent
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
-def get_args():
+def get_args(argv=None):
     parser = argparse.ArgumentParser(description="Train AASIST-L on ASVspoof 2019 LA")
     parser.add_argument("--config",     default="configs/train_config.json",
                         help="Training config JSON")
@@ -46,7 +59,40 @@ def get_args():
                         help="Disable tensor caching for dev set (saves RAM)")
     parser.add_argument("--resume",     default=None,
                         help="Path to checkpoint .pth to resume training from")
-    return parser.parse_args()
+    parser.add_argument("--resume_weights", "--resume-weights", default=None,
+                        help="Fine-tune: init model from these weights only (raw state "
+                             "dict like AASIST-L.pth, or a train.py checkpoint); fresh "
+                             "optimizer/scheduler, epoch 0, default lr 1e-5")
+    parser.add_argument("--lr",         type=float, default=None,
+                        help="Override learning rate")
+    parser.add_argument("--extra-train-protocol", action="append", default=[],
+                        help="Extra protocol mixed into the train set (repeatable; "
+                             "pair each with --extra-train-audio-dir)")
+    parser.add_argument("--extra-train-audio-dir", action="append", default=[])
+    parser.add_argument("--extra-dev-protocol", action="append", default=[],
+                        help="Extra protocol added to the dev set used for model selection")
+    parser.add_argument("--extra-dev-audio-dir", action="append", default=[])
+    parser.add_argument("--save-name",  default="best_model.pth",
+                        help="Checkpoint file name inside weights_dir")
+    args = parser.parse_args(argv)
+    if args.resume and args.resume_weights:
+        parser.error("use --resume (continue a run) OR --resume_weights (fine-tune), not both")
+    for kind in ("train", "dev"):
+        protos = getattr(args, f"extra_{kind}_protocol")
+        dirs = getattr(args, f"extra_{kind}_audio_dir")
+        if len(protos) != len(dirs):
+            parser.error(f"each --extra-{kind}-protocol needs one --extra-{kind}-audio-dir")
+    return args
+
+
+def load_weights_only(model: nn.Module, path: str, device) -> None:
+    """Init from a raw state dict (AASIST-L.pth) or a train.py checkpoint (strict)."""
+    state = torch.load(path, map_location=device)
+    if isinstance(state, dict) and "model" in state:
+        state = state["model"]
+    if isinstance(state, dict) and "state_dict" in state:
+        state = state["state_dict"]
+    model.load_state_dict({k.removeprefix("module."): v for k, v in state.items()})
 
 
 # ── EER (fast, threshold sweep on dev set) ───────────────────────────────────
@@ -100,8 +146,8 @@ def evaluate(model: nn.Module, loader: DataLoader, device: torch.device) -> floa
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main():
-    args = get_args()
+def main(argv=None):
+    args = get_args(argv)
 
     # ── Config ───────────────────────────────────────────────────────────────
     with open(args.config) as f:
@@ -113,7 +159,10 @@ def main():
 
     epochs      = args.epochs     or train_cfg.get("epochs",     100)
     batch_size  = args.batch_size or train_cfg.get("batch_size", 24)
-    lr          = float(train_cfg.get("lr",            1e-4))
+    # lr priority: --lr > 1e-5 when fine-tuning (--resume_weights) > config
+    lr          = (args.lr if args.lr is not None
+                   else 1e-5 if args.resume_weights
+                   else float(train_cfg.get("lr", 1e-4)))
     wd          = float(train_cfg.get("weight_decay",  1e-4))
     loss_name   = args.loss       or train_cfg.get("loss",      "LMCL")
     rawboost_type = int(rb_cfg.get("type", 5)) if rb_cfg.get("enabled", True) else None
@@ -124,6 +173,7 @@ def main():
     print(f"[train] Batch size: {batch_size}")
     print(f"[train] Loss:       {loss_name}")
     print(f"[train] RawBoost:   type {rawboost_type}")
+    print(f"[train] LR:         {lr:.1e}")
 
     # ── Directories ──────────────────────────────────────────────────────────
     weights_dir = ROOT / cfg["paths"]["weights_dir"]
@@ -132,6 +182,7 @@ def main():
     scores_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Datasets ─────────────────────────────────────────────────────────────
+    from torch.utils.data import ConcatDataset
     from src.data.dataset import ASVspoofDataset, collate_fn
 
     train_set = ASVspoofDataset(
@@ -147,6 +198,17 @@ def main():
         mode           = "infer",
         cache_tensors  = not args.no_cache,   # cache dev tensors — saves time each epoch
     )
+    # Extra protocols (e.g. scripts/fetch_bonafide_diversity.py). Same
+    # ASVspoofDataset -> same preprocess() + RawBoost path (GOLDEN RULE).
+    extra_train = [ASVspoofDataset(p, d, mode="train", rawboost_type=rawboost_type or 5)
+                   for p, d in zip(args.extra_train_protocol, args.extra_train_audio_dir)]
+    extra_dev = [ASVspoofDataset(p, d, mode="infer", cache_tensors=not args.no_cache)
+                 for p, d in zip(args.extra_dev_protocol, args.extra_dev_audio_dir)]
+    if extra_train:
+        train_set = ConcatDataset([train_set, *extra_train])
+    if extra_dev:
+        dev_set = ConcatDataset([dev_set, *extra_dev])
+    print(f"[train] Train items: {len(train_set)}   Dev items: {len(dev_set)}")
 
     train_loader = DataLoader(
         train_set,
@@ -175,6 +237,14 @@ def main():
     start_epoch = 0
     best_dev_eer = 1.0
 
+    if args.resume_weights:
+        load_weights_only(model, args.resume_weights, device)
+        print(f"[train] Fine-tuning from weights {args.resume_weights}")
+        # A fine-tune epoch is only saved if it BEATS the starting model on the
+        # same (possibly mixed) dev set — otherwise fine-tuning made it worse.
+        best_dev_eer = evaluate(model, dev_loader, device)
+        print(f"[train] Starting-point dev EER: {best_dev_eer*100:.4f}%")
+
     if args.resume:
         ckpt = torch.load(args.resume, map_location=device)
         model.load_state_dict(ckpt["model"])
@@ -195,14 +265,15 @@ def main():
     )
 
     # ── Log CSV ──────────────────────────────────────────────────────────────
-    log_path = scores_dir / "train_log.csv"
+    log_path = scores_dir / ("train_log.csv" if args.save_name == "best_model.pth"
+                             else f"{Path(args.save_name).stem}_log.csv")
     log_file = open(log_path, "w", newline="")
     log_writer = csv.writer(log_file)
     log_writer.writerow(["epoch", "train_loss", "dev_eer", "lr", "elapsed_s"])
     log_file.flush()
 
     print(f"\n[train] Log:        {log_path}")
-    print(f"[train] Best model: {weights_dir / 'best_model.pth'}")
+    print(f"[train] Best model: {weights_dir / args.save_name}")
     print("=" * 60)
 
     # ── Training loop ─────────────────────────────────────────────────────────
@@ -264,7 +335,7 @@ def main():
         # ── Checkpoint ───────────────────────────────────────────────────────
         if dev_eer < best_dev_eer:
             best_dev_eer = dev_eer
-            ckpt_path = weights_dir / "best_model.pth"
+            ckpt_path = weights_dir / args.save_name
             torch.save(
                 {
                     "epoch":        epoch,
@@ -287,7 +358,9 @@ def main():
     log_file.close()
     print("=" * 60)
     print(f"Training complete.  Best dev EER: {best_dev_eer*100:.4f}%")
-    print(f"Weights: {weights_dir / 'best_model.pth'}")
+    if not (weights_dir / args.save_name).exists():
+        print("WARN: no epoch beat the starting dev EER — no checkpoint written.")
+    print(f"Weights: {weights_dir / args.save_name}")
     print(f"Log:     {log_path}")
 
 

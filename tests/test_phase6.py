@@ -219,3 +219,28 @@ def test_load_cli_pickled_calibrator(tmp_path):
         sys.modules["__main__"] = real_main
     assert b"__main__" in path.read_bytes()
     assert isinstance(calibrate.Calibrator.load(str(path)), calibrate.Calibrator)
+
+
+# ── SSL-AASIST (wav2vec2 XLS-R + AASIST) ────────────────────────────────────
+
+SSL_WEIGHTS = ROOT / "outputs/weights/SSL_AASIST_DF.pth"
+SAMPLES = ROOT / "outputs/samples"
+
+
+@pytest.mark.skipif(not SSL_WEIGHTS.exists() or not SAMPLES.exists(),
+                    reason="SSL_AASIST_DF.pth (1.2 GB) or outputs/samples missing")
+def test_ssl_aasist_strict_load_and_direction():
+    """Strict load proves the fairseq→HF key mapping is complete; sample
+    files prove the class convention (index 1 = bonafide) carried over."""
+    from src.model.ssl_aasist import load_ssl_aasist
+    from src.preprocessing.preprocess import preprocess
+
+    model = load_ssl_aasist(SSL_WEIGHTS)          # strict=True inside
+    with torch.inference_mode():
+        for f in sorted(SAMPLES.glob("*.wav")):
+            _, logits = model(preprocess(str(f), mode="infer"))
+            score = (logits[0, 1] - logits[0, 0]).item()
+            if f.name.startswith("bonafide"):
+                assert score > 0, (f.name, score)
+            else:
+                assert score < 0, (f.name, score)
