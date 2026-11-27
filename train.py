@@ -74,7 +74,14 @@ def get_args(argv=None):
     parser.add_argument("--extra-dev-audio-dir", action="append", default=[])
     parser.add_argument("--save-name",  default="best_model.pth",
                         help="Checkpoint file name inside weights_dir")
+    parser.add_argument("--select-protocol", default=None,
+                        help="Pick the best checkpoint by EER on THIS set instead of dev "
+                             "(e.g. DF-cal from scripts/make_df_protocols.py). Dev EER is "
+                             "still computed and logged.")
+    parser.add_argument("--select-audio-dir", default=None)
     args = parser.parse_args(argv)
+    if bool(args.select_protocol) != bool(args.select_audio_dir):
+        parser.error("--select-protocol and --select-audio-dir go together")
     if args.resume and args.resume_weights:
         parser.error("use --resume (continue a run) OR --resume_weights (fine-tune), not both")
     for kind in ("train", "dev"):
@@ -227,6 +234,15 @@ def main(argv=None):
         collate_fn  = collate_fn,
         pin_memory  = (device.type == "cuda"),
     )
+    select_loader = None
+    if args.select_protocol:
+        select_set = ASVspoofDataset(args.select_protocol, args.select_audio_dir, mode="infer",
+                                     cache_tensors=not args.no_cache)
+        select_loader = DataLoader(select_set, batch_size=batch_size * 2, shuffle=False,
+                                   num_workers=args.workers, collate_fn=collate_fn,
+                                   pin_memory=(device.type == "cuda"))
+        print(f"[train] Checkpoint selection set: {len(select_set)} items ({args.select_protocol})")
+    select_name = "select" if select_loader else "dev"
 
     # ── Model ────────────────────────────────────────────────────────────────
     from src.model.AASIST import Model
@@ -244,6 +260,9 @@ def main(argv=None):
         # same (possibly mixed) dev set — otherwise fine-tuning made it worse.
         best_dev_eer = evaluate(model, dev_loader, device)
         print(f"[train] Starting-point dev EER: {best_dev_eer*100:.4f}%")
+        if select_loader:
+            best_dev_eer = evaluate(model, select_loader, device)
+            print(f"[train] Starting-point select EER: {best_dev_eer*100:.4f}%")
 
     if args.resume:
         ckpt = torch.load(args.resume, map_location=device)
@@ -269,11 +288,13 @@ def main(argv=None):
                              else f"{Path(args.save_name).stem}_log.csv")
     log_file = open(log_path, "w", newline="")
     log_writer = csv.writer(log_file)
-    log_writer.writerow(["epoch", "train_loss", "dev_eer", "lr", "elapsed_s"])
+    log_writer.writerow(["epoch", "train_loss", "dev_eer", "lr", "elapsed_s", "select_eer"])
     log_file.flush()
+    last_path = weights_dir / f"{Path(args.save_name).stem}_last.pth"
 
     print(f"\n[train] Log:        {log_path}")
-    print(f"[train] Best model: {weights_dir / args.save_name}")
+    print(f"[train] Best model: {weights_dir / args.save_name}  (by {select_name} EER)")
+    print(f"[train] Last epoch: {last_path}  (always written)")
     print("=" * 60)
 
     # ── Training loop ─────────────────────────────────────────────────────────
@@ -318,6 +339,7 @@ def main(argv=None):
 
         # ── Dev evaluation ───────────────────────────────────────────────────
         dev_eer    = evaluate(model, dev_loader, device)
+        select_eer = evaluate(model, select_loader, device) if select_loader else None
         avg_loss   = epoch_loss / max(n_batches, 1)
         elapsed    = time.time() - t0
         current_lr = scheduler.get_last_lr()[0]
@@ -327,40 +349,50 @@ def main(argv=None):
             f"Epoch {epoch+1:3d}/{epochs}  "
             f"loss={avg_loss:.4f}  "
             f"dev_EER={dev_eer*100:.4f}%  "
-            f"lr={current_lr:.2e}  "
+            + (f"select_EER={select_eer*100:.4f}%  " if select_loader else "")
+            + f"lr={current_lr:.2e}  "
             f"time={elapsed:.0f}s",
             flush=True,
         )
 
         # ── Checkpoint ───────────────────────────────────────────────────────
-        if dev_eer < best_dev_eer:
-            best_dev_eer = dev_eer
+        crit = select_eer if select_loader else dev_eer
+        improved = crit < best_dev_eer
+        if improved:
+            best_dev_eer = crit
+        ckpt = {
+            "epoch":        epoch,
+            "model":        model.state_dict(),
+            "optimizer":    optimizer.state_dict(),
+            "best_dev_eer": best_dev_eer,
+            "dev_eer":      dev_eer,
+            "select_eer":   select_eer,
+            "loss":         loss_name,
+            "config":       cfg,
+        }
+        # Last epoch is always kept: a fine-tune can lose on LA dev yet win
+        # cross-domain, so never throw the weights away (eval them on DF).
+        torch.save(ckpt, last_path)
+        if improved:
             ckpt_path = weights_dir / args.save_name
-            torch.save(
-                {
-                    "epoch":        epoch,
-                    "model":        model.state_dict(),
-                    "optimizer":    optimizer.state_dict(),
-                    "best_dev_eer": best_dev_eer,
-                    "loss":         loss_name,
-                    "config":       cfg,
-                },
-                ckpt_path,
-            )
-            print(f"  ✓ New best — saved to {ckpt_path}  (EER={best_dev_eer*100:.4f}%)")
+            torch.save(ckpt, ckpt_path)
+            print(f"  ✓ New best — saved to {ckpt_path}  ({select_name} EER={best_dev_eer*100:.4f}%)")
 
         # ── CSV row ──────────────────────────────────────────────────────────
         log_writer.writerow([epoch + 1, round(avg_loss, 6), round(dev_eer, 6),
-                             round(current_lr, 8), round(elapsed, 1)])
+                             round(current_lr, 8), round(elapsed, 1),
+                             "" if select_eer is None else round(select_eer, 6)])
         log_file.flush()
 
     # ── Done ──────────────────────────────────────────────────────────────────
     log_file.close()
     print("=" * 60)
-    print(f"Training complete.  Best dev EER: {best_dev_eer*100:.4f}%")
+    print(f"Training complete.  Best {select_name} EER: {best_dev_eer*100:.4f}%")
     if not (weights_dir / args.save_name).exists():
-        print("WARN: no epoch beat the starting dev EER — no checkpoint written.")
+        print(f"WARN: no epoch beat the starting {select_name} EER — no best checkpoint "
+              f"written. Last-epoch weights are in {last_path}")
     print(f"Weights: {weights_dir / args.save_name}")
+    print(f"Last:    {last_path}")
     print(f"Log:     {log_path}")
 
 

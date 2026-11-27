@@ -129,10 +129,38 @@ def test_finetune_resume_weights_smoke(tmp_path):
                 "--resume_weights", str(weights),
                 "--extra-train-protocol", str(ex_p), "--extra-train-audio-dir", str(ex_d),
                 "--extra-dev-protocol", str(ex_p), "--extra-dev-audio-dir", str(ex_d),
+                "--select-protocol", str(dv_p), "--select-audio-dir", str(dv_d),
                 "--save-name", "ft.pth"])
     log = (tmp_path / "s" / "ft_log.csv").read_text().splitlines()
     assert len(log) == 3                                    # header + 2 epochs
     assert float(log[1].split(",")[3]) == pytest.approx(1e-5)   # fine-tune default lr
+    assert log[0].endswith("select_eer") and log[1].split(",")[5] != ""
+    last = torch.load(tmp_path / "w" / "ft_last.pth", weights_only=False)   # always written
+    assert last["epoch"] == 1 and last["select_eer"] is not None
+
+
+def test_make_df_protocols(tmp_path):
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    from make_df_protocols import convert
+    from domain_calibration import is_cal_speaker
+    from src.data.dataset import ASVspoofDataset
+
+    spk = ["LA_0001", "LA_0002", "LA_0003", "LA_0004", "LA_0005", "LA_0006"]
+    rows = [f"{s} DF_E_{i} nocodec asvspoof {'-' if i % 2 else 'A07'} "
+            f"{'bonafide' if i % 2 else 'spoof'} notrim eval x - - - -" for i, s in enumerate(spk)]
+    (tmp_path / "s.txt").write_text("\n".join(rows) + "\n")
+    n = convert(tmp_path / "s.txt", tmp_path)
+    assert n["cal"] + n["test"] == 6
+    for name in ("cal", "test"):
+        lines = (tmp_path / f"df_{name}_protocol.txt").read_text().split()
+        for i, s in enumerate(spk):
+            assert (f"DF_E_{i}" in lines) == (is_cal_speaker(s) == (name == "cal"))
+    # ASVspoofDataset must parse it (label in column 5)
+    items = ASVspoofDataset._parse_protocol(ASVspoofDataset.__new__(ASVspoofDataset),
+                                            tmp_path / "df_cal_protocol.txt")
+    assert {it["label"] for it in items} <= {0, 1} and len(items) == n["cal"]
 
 
 def test_train_args_validation():
