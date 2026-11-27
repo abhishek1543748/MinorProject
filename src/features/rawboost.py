@@ -7,7 +7,9 @@ import copy
 
 
 def randRange(x1, x2, integer):
-    y = np.random.uniform(low=x1, high=x2, size=(1,))
+    # Same draw as upstream (size=(1,)), returned as a scalar: NumPy >= 2
+    # raises on int()/float() of a 1-element array (Colab hit this).
+    y = float(np.random.uniform(low=x1, high=x2, size=(1,))[0])
     if integer:
         y = int(y)
     return y
